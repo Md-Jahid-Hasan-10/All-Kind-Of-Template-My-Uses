@@ -611,7 +611,10 @@ void Goriber_solve()
     cout << ans << endl;
 }
 //-------------------------- > LCA ------------------------------------>
+#include<bits/stdc++.h>
 
+using namespace std;
+typedef long long ll;
 int n, m;
 int Level[N];
 int dp[N][22];
@@ -655,7 +658,7 @@ int get_lca(int a,int b)
         }
         return dp[a][0];
 }
-int qq()
+int main()
 {
     int n;
     cin >> n;
@@ -677,6 +680,8 @@ int qq()
 
 }
 //-------------------- > Flat tree ---------------->
+#include<bits/stdc++.h>
+using namespace std;
 
 const int N = 2e5 + 12;
 vector<int> graph[N];
@@ -696,7 +701,7 @@ void dfs(int node,int par)
     flat_tree.push_back(node);
     cnt++;
 }
-int ww()
+int main()
 {
     int n;
     cin >> n;
@@ -713,6 +718,10 @@ int ww()
 }
 //------------------------ > Binary Indexed Tree ---------------- >
 //! In The Name Of Allah
+
+#include <bits/stdc++.h>
+
+using namespace std;
 
 #define int long long
 #define endl '\n'
@@ -747,7 +756,7 @@ int query(int l,int r)
 {
     return Sum(r) - Sum(l-1);
 }
-signed ee()
+signed main()
 {
     Fokinnir_moto_kaj_koris_na
     cin >> n;
@@ -765,7 +774,8 @@ signed ee()
 
 }
 //--------------------------- sparce table --------------------------------->
-
+#include <bits/stdc++.h>
+using namespace std;
 //0 Indexed
 #define MX 10000
 int spt[MX][22];
@@ -789,7 +799,7 @@ int query(int l, int r)
 	return min (spt[l][j], spt[r - (1 << j) + 1][j]);
 }
 
-int rr()
+int main()
 {
 
     cin >> n;
