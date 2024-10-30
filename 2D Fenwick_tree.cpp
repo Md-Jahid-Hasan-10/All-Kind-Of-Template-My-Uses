@@ -12,49 +12,45 @@ using namespace std;
     cin.tie(0);                    \
     cout.tie(0);
 
-struct FenwickTree2D {
-    vector<vector<int>> bit;
-    int n, m;
-    FenwickTree2D(vector<vector<int>> &a):n((int)a.size()),m((int)a[0].size()),bit(n+1,vector<int>(m+1)){
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < m; j++){
-                add(i,j,a[i][j]);
-            }
-        }
-    }
-    int sum(int x, int y) {
-        int ret = 0;
-        for (int i = x+1; i > 0; i -= (i & -i))
-            for (int j = y+1; j > 0; j -= (j & -j))
-                ret += bit[i][j];
-        return ret;
-    }
-
-    void add(int x, int y, int delta) {
-        for (int i = x+1; i <= n; i += (i & -i))
-            for (int j = y+1; j <= m; j += (j & -j))
-                bit[i][j] += delta;
-    }
-    int query(int r1,int c1,int r2,int c2)
-    {
-        return sum(r2,c2) - sum(r1-1,c2) - sum(r2,c1-1) + sum(r1,c1);
-    }
+template <typename T> class BIT2D {
+  private:
+	const int n, m;
+	vector<vector<T>> bit;
+  public:
+	BIT2D(int n, int m) : n(n), m(m), bit(n + 1, vector<T>(m + 1)) {}
+	void add(int r, int c, T val) {
+		r++, c++;
+		for (; r <= n; r += r & -r) {
+			for (int i = c; i <= m; i += i & -i) { bit[r][i] += val; }
+		}
+	}
+	T rect_sum(int r, int c) {
+		r++, c++;
+		T sum = 0;
+		for (; r > 0; r -= r & -r) {
+			for (int i = c; i > 0; i -= i & -i) { sum += bit[r][i]; }
+		}
+		return sum;
+	}
+	T rect_sum(int r1, int c1, int r2, int c2) {
+		return rect_sum(r2,c2)-rect_sum(r2,c1-1)-rect_sum(r1-1,c2)+rect_sum(r1-1,c1-1);
+	}
 };
 
 signed main()
 {
-
     int n,m;
     cin >> n >> m;
     vector<vector<int>> ar(n,vector<int>(m));
+    BIT2D<int> bit(n, m);
     for(int i = 0; i < n; i++){
         for(int j = 0; j < m; j++){
             cin >> ar[i][j];
+            bit.add(i,j,ar[i][j]);
         }
     }
-    FenwickTree2D la(ar);
-    cout << la.query(1,1,2,2) << endl;
-    la.add(2,2,5);
-    cout << la.query(1,1,2,2) << endl;
-}
 
+    cout << bit.rect_sum(1,1,2,2) << endl;
+    bit.add(2,2,5);
+    cout <<  bit.rect_sum(1,1,2,2) << endl;
+}
