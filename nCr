@@ -25,7 +25,7 @@ int nCr(int n,int r)
 {
     if(n < r)return 0ll;
     ll up = fact[n];
-    int down = fact[r]*fact[n-r];
+    int down = (fact[r]*fact[n-r]) % mod;
     down = power(down,mod-2,mod);
     ll res = (up * down) % mod;
     return res;
