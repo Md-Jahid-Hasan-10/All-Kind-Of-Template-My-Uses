@@ -1,6 +1,17 @@
 const ll mod = 1e9+7;
 const ll N = 1e6+123;
-
+int add(int a,int b,int mod)
+{
+    return (a + b) % mod;
+}
+int sub(int a,int b,int mod)
+{
+    return (a - b + mod) % mod;
+}
+int mul(int a,int b,int mod)
+{
+    return (a * b) % mod;
+}
 int power(int a,int b,int mod)
 {
     ll ans = 1;
