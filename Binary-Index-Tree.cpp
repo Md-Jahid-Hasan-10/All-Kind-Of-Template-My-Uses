@@ -11,46 +11,37 @@ using namespace std;
     ios_base::sync_with_stdio(0);  \
     cin.tie(0);                    \
     cout.tie(0);
-
-const int N = 1e5 + 123;
-int tree[4*N],ar[N];
-int n;
-void update(int pos, int val)
-{
-    while (pos <= n)
-    {
-        tree[pos] += val;
-        pos += (pos & -pos);
+struct Bit {
+    long long BIT[N];
+    void update(int x, int delta) {
+        for (; x < N; x += x & -x)
+            BIT[x] += delta;
     }
-}
-int Sum(int pos)
-{
-    int sum = 0;
-    while (pos > 0)
-    {
-        sum += tree[pos];
-        pos -= (pos & -pos);
+    long long query(int x) {
+        long long sum = 0;
+        for (; x > 0; x -= x & -x)
+            sum += BIT[x];
+        return sum;
     }
-    return sum;
-}
-int query(int l,int r)
-{
-    return Sum(r) - Sum(l-1);
-}
+   long long sum(int l,int r){
+       return query(r) - query(l-1);
+   }
+};
 signed main()
 {
     Fokinnir_moto_kaj_koris_na
     cin >> n;
+    Bit seg;
     for(int i = 1; i <= n; i++){
         cin >> ar[i];
-        update(i,ar[i]);
+        seg.update(i,ar[i]);
     }
     int q;
     cin >> q;
     while(q--){
         int l,r;
         cin >> l >> r;
-        cout << query(l,r) << endl;
+        cout << seg.sum(r) << endl;
     }
 
 }
