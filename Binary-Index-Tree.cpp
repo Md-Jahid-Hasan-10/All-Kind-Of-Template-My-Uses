@@ -44,7 +44,7 @@ signed main()
     while(q--){
         int l,r;
         cin >> l >> r;
-        cout << seg.sum(r) << endl;
+        cout << seg.sum(l,r) << endl;
     }
 
 }
