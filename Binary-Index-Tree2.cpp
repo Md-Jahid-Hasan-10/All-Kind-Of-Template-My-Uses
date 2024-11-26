@@ -2,7 +2,7 @@ const ll N = 1e6 + 5;
 int tree[N+5];
 void update(int pos, int val)
 {
-    while (pos <= n)
+    while (pos <= N)
     {
         tree[pos] += val;
         pos += (pos & -pos);
