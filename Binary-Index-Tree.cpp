@@ -11,7 +11,8 @@ using namespace std;
     ios_base::sync_with_stdio(0);  \
     cin.tie(0);                    \
     cout.tie(0);
-const int N = 2e6 + 7;
+
+const int N = 2e5 + 7;
 struct Bit {
     long long BIT[N];
     void update(int x, int delta) {
@@ -28,6 +29,7 @@ struct Bit {
        return query(r) - query(l-1);
    }
 };
+
 signed main()
 {
     Fokinnir_moto_kaj_koris_na
