@@ -1,0 +1,112 @@
+//! In The Name Of Allah
+ 
+/*********************************************************************\
+*!          |       *        |       | ___  | @                       |
+*!          |      * *       |       |  |   |  @                      |
+*!          |     *   *      |       |  |   |   @                     |
+*!          |    *******     |-------|  |   |    @                    |
+*! |*       |   *       *    |       |  |   |   @                     |
+*! |        |  *         *   |       |  |   |  @                      |
+*! |________| *           *  |       | ___  | @                       |
+*!                                                                    |
+*!  codeforces = __Jahid__Noob__                                      |
+*!  mail =  2227Jahid@gmail.com                                       |
+*!  IIT,Jahangirnagar University(41)                                  |
+*!                                                                    |
+**********************************************************************/
+ 
+#include <bits/stdc++.h>
+using namespace std;
+ 
+#define int long long
+#define endl '\n'
+#define pb push_back
+#define all(s) (s).begin(), (s).end()
+#define rall(s) s.rbegin(), s.rend()
+#define sz(x) (int)x.size()
+#define Fokinnir_moto_kaj_koris_na \
+    ios_base::sync_with_stdio(0);  \
+    cin.tie(0);                    \
+    cout.tie(0);
+ 
+typedef long long ll;
+typedef vector<int> vi;
+const ll inf = 1e18;
+const ll mod = 998244353;
+const ll N = 4e5 + 5;
+
+int tree[N+5];
+vi vals;
+
+void update(int pos, int val)
+{
+    while (pos <= N)
+    {
+        tree[pos] += val;
+        pos += (pos & -pos);
+    }
+}
+int Sum(int pos)
+{
+    int sum = 0;
+    while (pos > 0)
+    {
+        sum += tree[pos];
+        pos -= (pos & -pos);
+    }
+    return sum;
+}
+void ad(int x, int b) {
+	int ind = upper_bound(vals.begin(), vals.end(), x) - vals.begin();
+	update(ind, b);
+}
+ll query(int x) {
+	int ind = upper_bound(vals.begin(), vals.end(), x) - vals.begin();
+	return Sum(ind);
+}
+void Goriber_solve()
+{
+    int n,q;
+    cin >> n >> q;
+    vi ar(n);
+    for(int i = 0; i < n; i++){
+        cin >> ar[i];
+    }
+    vals = ar;
+    vector<array<int,3>> queries;
+    for(int i = 1; i <= q; i++){
+        char c;
+        int x,y;
+        cin >> c >> x >> y;
+        int la = c == '?';
+        queries.pb({la,x,y});
+        if(c == '!')vals.push_back(y);
+    }
+    sort(all(vals));
+    vals.erase(unique(all(vals)),vals.end());
+    for(int i = 0; i < n; i++){
+        ad(ar[i],1);
+    }
+    for(auto u : queries){
+        u[1]--;
+        if(u[0]){
+            cout << query(u[2]) - query(u[1]) << endl;
+        }
+        else{
+            ad(ar[u[1]],-1);
+            ar[u[1]] = u[2];
+            ad(ar[u[1]],1);
+        }
+    }
+}
+signed main()
+{
+    Fokinnir_moto_kaj_koris_na
+    int _ = 1,tc = 0;
+    //cin >> _;
+    while (_--)
+    {
+        //cout<<"Case "<<++tc<<": ";
+        Goriber_solve();
+    }
+}
