@@ -30,7 +30,9 @@ struct Bit {
 signed main()
 {
     Fokinnir_moto_kaj_koris_na
+    int n;
     cin >> n;
+    int ar[n+1];
     Bit seg;
     for(int i = 1; i <= n; i++){
         cin >> ar[i];
