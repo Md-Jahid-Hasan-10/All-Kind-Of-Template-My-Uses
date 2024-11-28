@@ -1,6 +1,6 @@
 const ll N = 1e6 + 5;
 ll tree[N+5];
-void update(int pos, int val)
+void update(int pos, ll val)
 {
     while (pos <= N)
     {
