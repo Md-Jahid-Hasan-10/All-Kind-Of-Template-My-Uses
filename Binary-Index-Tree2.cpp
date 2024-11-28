@@ -1,5 +1,5 @@
 const ll N = 1e6 + 5;
-int tree[N+5];
+ll tree[N+5];
 void update(int pos, int val)
 {
     while (pos <= N)
@@ -8,9 +8,9 @@ void update(int pos, int val)
         pos += (pos & -pos);
     }
 }
-int query(int pos)
+ll query(int pos)
 {
-    int sum = 0;
+    ll sum = 0;
     while (pos > 0)
     {
         sum += tree[pos];
@@ -18,6 +18,6 @@ int query(int pos)
     }
     return sum;
 }
-int sum(int l,int r){
+ll sum(int l,int r){
   return query(r) - query(l-1);
 }
