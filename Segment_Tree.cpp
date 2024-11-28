@@ -42,8 +42,8 @@ const ll INF = 1e18;
 const ll Mod = 1e9+7;
 const ll N = 2e5 +12;
 int ar[N];
-int tree[N*4];
-int combine(int a,int b)
+ll tree[N*4];
+ll combine(int a,int b)
 {
     return a+b;
 }
@@ -61,7 +61,7 @@ void init(int node,int b,int e)
     tree[node] = combine(tree[Left] , tree[Right]);
 }
  
-int query(int node,int b,int e,int i,int j)
+ll query(int node,int b,int e,int i,int j)
 {
     if(i>e || j<b)return 0;
     if(i<=b && j>=e){
@@ -70,8 +70,8 @@ int query(int node,int b,int e,int i,int j)
     int Left = node * 2;
     int Right = node * 2 + 1;
     int mid = (b+e)/2;
-    int p1 = query(Left,b,mid,i,j);
-    int p2 = query(Right,mid+1,e,i,j);
+    ll p1 = query(Left,b,mid,i,j);
+    ll p2 = query(Right,mid+1,e,i,j);
     return combine(p1,p2);
 }
  
