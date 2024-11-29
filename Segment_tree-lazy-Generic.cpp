@@ -18,7 +18,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-//#define int long long
+#define int long long
 #define endl '\n'
 #define pb push_back
 #define pob pop_back
