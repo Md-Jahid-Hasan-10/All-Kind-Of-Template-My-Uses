@@ -1,0 +1,155 @@
+//! In The Name Of Allah
+ 
+/*********************************************************************\
+*!          |       *        |       | ___  | @                       |
+*!          |      * *       |       |  |   |  @                      |
+*!          |     *   *      |       |  |   |   @                     |
+*!          |    *******     |-------|  |   |    @                    |
+*! |*       |   *       *    |       |  |   |   @                     |
+*! |        |  *         *   |       |  |   |  @                      |
+*! |________| *           *  |       | ___  | @                       |
+*!                                                                    |
+*!  codeforces = __Jahid__Noob__                                      |
+*!  mail =  2227Jahid@gmail.com                                       |
+*!  IIT,Jahangirnagar University(41)                                  |
+*!                                                                    |
+**********************************************************************/
+ 
+#include <bits/stdc++.h>
+using namespace std;
+
+//#define int long long
+#define endl '\n'
+#define pb push_back
+#define pob pop_back
+#define make M
+#define F first
+#define S second
+#define all(s) (s).begin(), (s).end()
+#define rall(s) s.rbegin(), s.rend()
+#define sz(x) (int)x.size()
+#define mem(a, b) memset(a, b, sizeof(a))
+#define log2(x) 31 - __builtin_clz(x)
+#define getbit(n, i) (((n) & (1LL << (i))) != 0)
+#define msb(x) 31 - __builtin_clz(x)
+#define TxtIO                         \
+    freopen("sample.in", "r", stdin); \
+    freopen("sample.out", "w", stdout);
+#define Fokinnir_moto_kaj_koris_na \
+    ios_base::sync_with_stdio(0);  \
+    cin.tie(0);                    \
+    cout.tie(0);
+#define py cout << "YES" << endl
+#define pn cout << "NO" << endl
+#define PI acos(-1)
+ 
+typedef long long ll;
+typedef vector<int> vi;
+typedef vector<vi> vvi;
+typedef pair<int, int> pii;
+typedef vector<pii> vii;
+typedef tuple<int,int,int> tu;
+typedef array<int,3> triple;
+/*
+int p = 237,mod = 1000000289;
+auto Goriber_function = [&] (int m) -> int{
+ 
+};
+*/
+const ll N = 2e5+5;
+const ll mod = 1e9 + 7;
+const ll inf = 1e18;
+ll tree[4*N],lazy[4*N];
+int ar[N];
+
+ll combine(ll a,ll b){
+    return (a + b);
+}
+void build(int node, int l, int r)
+{
+    if(l == r){
+        tree[node] = ar[l];
+        return;
+    }
+    int mid = (l + r) / 2;
+    build(2*node, l, mid);
+    build(2*node+1, mid+1, r);
+    tree[node] = combine(tree[2*node], tree[2*node+1]);
+}
+void propagate(int node, int l, int r)
+{
+    if(l == r){
+        lazy[node] = 0;
+        return;
+    }
+    lazy[2*node] += lazy[node];
+    lazy[2*node+1] += lazy[node];
+    lazy[node] = 0;
+}
+void update(int node, int l, int r, int L, int R, int val)
+{
+    if(lazy[node] != 0){
+        tree[node] += (1LL * lazy[node] * (r - l + 1));
+        propagate(node, l, r);
+    }
+    if(l > R || r < L){
+        return;
+    }
+    if(l >= L && r <= R){
+        tree[node] += (1LL * val * (r - l + 1));
+        lazy[node] = val;
+        propagate(node, l, r);
+        return;
+    }
+    int mid = (l + r) / 2;
+    update(2*node, l, mid, L, R, val);
+    update(2*node+1, mid+1, r, L, R, val);
+    tree[node] = combine(tree[2*node], tree[2*node+1]);
+}
+ll query(int node, int l, int r, int L, int R)
+{
+    if(lazy[node] != 0){
+        tree[node] += (1LL *lazy[node] * (r - l + 1));
+        propagate(node, l, r);
+    }
+    if(l > R || r < L){
+        return 0;
+    }
+    if(l >= L && r <= R){
+        return tree[node];
+    }
+    int mid = (l + r) / 2;
+    return combine(query(2*node, l, mid, L, R), query(2*node+1, mid+1, r, L, R));
+}
+void Goriber_solve()
+{
+    int n,q;
+    cin >> n >> q;
+    build(1,1,n);
+    while(q--){
+        int type,l,r,val;
+        cin >> type;
+        if(type == 1){
+            cin >> l >> r >> val;
+            l++;
+            update(1,1,n,l,r,val);
+        }
+        else{
+            cin >> l >> r;
+            l++;
+            cout << query(1,1,n,l,r) << endl;
+        }
+    }
+}
+signed main()
+{
+ 
+    Fokinnir_moto_kaj_koris_na
+    int _ = 1,tc = 0;
+    //cin >> _;
+    while (_--)
+    {
+        //cout<<"Case "<<++tc<<": ";
+        Goriber_solve();
+    }
+}
