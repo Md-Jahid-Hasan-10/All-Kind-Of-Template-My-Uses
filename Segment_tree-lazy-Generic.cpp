@@ -59,120 +59,120 @@ auto Goriber_function = [&] (int m) -> int{
 const ll N = 2e5+5;
 const ll mod = 1e9 + 7;
 const ll inf = 1e18;
-
 struct segmenttree
 {
     int n;
-    vector<int> st, lazy;
+    vector<int> st, lazy, islazy;
     void init(int _n)
     {
         this->n = _n;
         st.resize(4 * n, 0);
-        lazy.resize(4 * n, -1);
+        lazy.resize(4 * n, 0);
+        islazy.resize(4 * n, 0);
     }
     int combine(int a, int b)
     {
-        return (a + b);
+        return (a & b);   
     }
-    void push(int start, int ending, int node)
+    void push(int s, int e, int i)
     {
-        if (lazy[node] != -1)
-        {
-            st[node] = (ending - start + 1) * lazy[node];
-            if (start != ending)
+        if (islazy[i])
+        { 
+            st[i] = (st[i] | lazy[i]);
+            if (s != e)
             {
-                lazy[2 * node + 1] = lazy[node];
-                lazy[2 * node + 2] = lazy[node];
+                lazy[2 * i + 2] = (lazy[2 * i + 2]|lazy[i]);
+                lazy[2 * i + 1] = (lazy[2 * i + 1]|lazy[i]);
+                islazy[2 * i + 1] = 1;
+                islazy[2 * i + 2] = 1;
             }
-            lazy[node] = -1;
+            lazy[i] = 0;
+            islazy[i] = 0;
         }
     }
-    void build(int start, int ending, int node, vector<int> &v)
+    void build(int s, int e, int i,vector<ll> &arr)
     {
-        // leaf node base case
-        if (start == ending)
+        if (s == e)
         {
-            st[node] = v[start];
+            st[i] = arr[s];
             return;
         }
-        int mid = (start + ending) / 2;
-        build(start, mid, 2 * node + 1, v);
-        build(mid + 1, ending, 2 * node + 2, v);
-        st[node] = combine(st[node * 2 + 1] , st[node * 2 + 2]);
+        int mid = (s + e) / 2;
+        build(s, mid, 2 * i + 1,arr);
+        build(mid + 1, e, 2 * i + 2,arr);
+        st[i] = combine(st[2 * i + 1], st[2 * i + 2]);
     }
-    int query(int start, int ending, int l, int r, int node)
+    ll query(int s, int e,int l, int r,int i)
     {
-        push(start, ending, node);
-        if (start > r || ending < l)
+        push(s, e, i);
+        if (s > r or e < l)
         {
-            return 0;
+            return (LLONG_MAX);
         }
-        if (start >= l && ending <= r)
+        if (s >= l and e <= r)
         {
-            return st[node];
+            return st[i];
         }
-        int mid = (start + ending) / 2;
-        int q1 = query(start, mid, l, r, 2 * node + 1);
-        int q2 = query(mid + 1, ending, l, r, 2 * node + 2);
-        return combine(q1 , q2);
+        int mid = (s + e) / 2;
+ 
+        ll left = query(s, mid, l, r, 2 * i + 1);
+        ll right = query(mid + 1, e, l, r, 2 * i + 2);
+        return combine(left, right);
     }
-    void update(int start, int ending, int node, int l, int r, int value)
+    void update_query(int s, int e, int i, int l, int r,int v)
     {
-        push(start, ending, node);
-        if (start > r || ending < l)
+        push(s, e, i);
+        if (s > r or e < l)
         {
             return;
         }
-        if (start >= l && ending <= r)
+        if (s >= l and e <= r)
         {
-            lazy[node] = value;
-            push(start, ending, node);
+            lazy[i] = v;
+            islazy[i] = 1;
+            push(s, e, i);
             return;
         }
-        int mid = (start + ending) / 2;
-        update(start, mid, 2 * node + 1, l, r, value);
-        update(mid + 1, ending, 2 * node + 2, l, r, value);
-        st[node] = combine(st[node * 2 + 1] , st[node * 2 + 2]);
+        int mid = (s + e) / 2;
+ 
+        update_query(s, mid, 2 * i + 1, l, r, v);
+        update_query(mid + 1, e, 2 * i + 2, l, r, v);
+ 
+        st[i] = combine(st[2 * i + 1], st[2 * i + 2]);
         return;
     }
-    void build(vector<int> &v)
-    {
-        build(0, n - 1, 0, v);
+    void build(vector<ll> &v){
+        build(0,n-1,0,v);
     }
-    int query(int l, int r)
-    {
-        return query(0, n - 1, l, r, 0);
+    int query(ll l,ll r){
+        return query(0,n-1,l,r,0);
     }
-    void update(int l, int r, int x)
-    {
-        update(0, n - 1, 0, l, r, x);
+    void update_query(ll l, ll r, ll x){
+        update_query(0,n-1,0,l,r,x);
     }
 };
+ 
 void Goriber_solve()
 {
     int n,q;
     cin >> n >> q;
     segmenttree tree;
     tree.init(n);
-    vi ar(n,0);
-    for(auto &x : ar)cin >> x;
-    tree.build(ar);
-    while(q--){
-        int type,l,r,x;
+    for(int i = 0; i < q; i++){
+        int type;
         cin >> type;
-        if(type==1){
-            cin >> l >> r >> x;
-            r--;
-            tree.update(l,r,x);
+        if(type == 1){
+            int l,r,v;
+            cin >> l >> r >> v;
+            tree.update_query(l,r-1,v);
         }
         else{
+            int l,r;
             cin >> l >> r;
-            r--;
-            cout << tree.query(l,r) << endl;
+            cout << tree.query(l,r-1) << endl;
         }
     }
 }
-
 signed main()
 {
  
