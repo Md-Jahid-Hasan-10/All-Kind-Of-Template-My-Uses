@@ -97,12 +97,13 @@ struct Node1 {
 struct Update1 {
     ll val; // may change
     Update1(){ // Identity update
-        val = 0;
+        val = -1;
     }
     Update1(ll val1) { // Actual Update
         val = val1;
     }
     void apply(Node1 &a, int start, int end) { // apply update to given node
+        if(val == -1)return;
         a.val = val * (end - start + 1); // may change
     }
     void combine(Update1& new_update, int start, int end){
