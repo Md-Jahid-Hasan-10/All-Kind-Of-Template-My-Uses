@@ -59,6 +59,7 @@ auto Goriber_function = [&] (int m) -> int{
 const ll N = 2e5+5;
 const ll mod = 1e9 + 7;
 const ll inf = 1e18;
+
 struct segmenttree
 {
     int n;
@@ -67,7 +68,7 @@ struct segmenttree
     {
         this->n = _n;
         st.resize(4 * n, 0);
-        lazy.resize(4 * n, 0);
+        lazy.resize(4 * n, -1);
     }
     int combine(int a, int b)
     {
@@ -75,15 +76,15 @@ struct segmenttree
     }
     void push(int start, int ending, int node)
     {
-        if (lazy[node])
+        if (lazy[node] != -1)
         {
-            st[node] += (ending - start + 1) * lazy[node];
+            st[node] = (ending - start + 1) * lazy[node];
             if (start != ending)
             {
-                lazy[2 * node + 1] += lazy[node];
-                lazy[2 * node + 2] += lazy[node];
+                lazy[2 * node + 1] = lazy[node];
+                lazy[2 * node + 2] = lazy[node];
             }
-            lazy[node] = 0;
+            lazy[node] = -1;
         }
     }
     void build(int start, int ending, int node, vector<int> &v)
@@ -147,7 +148,6 @@ struct segmenttree
         update(0, n - 1, 0, l, r, x);
     }
 };
-
 void Goriber_solve()
 {
     int n,q;
@@ -155,7 +155,7 @@ void Goriber_solve()
     segmenttree tree;
     tree.init(n);
     vi ar(n,0);
-    for(auto &x:ar) cin >> x;
+    for(auto &x : ar)cin >> x;
     tree.build(ar);
     while(q--){
         int type,l,r,x;
