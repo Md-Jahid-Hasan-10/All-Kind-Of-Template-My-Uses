@@ -151,7 +151,7 @@ struct segmenttree
         update_query(0,n-1,0,l,r,x);
     }
 };
- 
+ // 0 based array
 void Goriber_solve()
 {
     int n,q;
