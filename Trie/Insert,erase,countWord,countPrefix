@@ -1,0 +1,85 @@
+struct Node{
+    Node* links[26];
+    int cnt_pre = 0;
+    int cnt_word = 0;
+    bool contains(char c){
+        return (links[c-'a'] != NULL);
+    }
+    void put(char c, Node* node){
+        links[c - 'a'] = node;
+    }
+    Node* get(char c){
+        return links[c - 'a'];
+    }
+    void increasePre(){
+        cnt_pre++;
+    }
+    void increaseWord(){
+        cnt_word++;
+    }
+    void decreasePre(){
+        cnt_pre--;
+    }
+    void decreaseWord(){
+        cnt_word--;
+    }
+    int getPre(){
+        return cnt_pre;
+    }
+    int getWord(){
+        return cnt_word;
+    }
+};
+
+class Trie{
+private:
+    Node *root;
+
+public:
+    Trie(){
+        root = new Node();
+    }
+    void insert(string s){
+        Node* cur_node = root;
+        for(char c : s){
+            if(!cur_node -> contains(c)){
+                cur_node -> put(c, new Node());
+            }
+            //! move reference node
+            cur_node = cur_node -> get(c);
+            cur_node -> increasePre();
+        }
+        cur_node -> increaseWord();
+    }
+    int countWords(string s){
+        Node* cur_node = root;
+        for(char c : s){
+            if(!cur_node -> contains(c)){
+                return 0;
+            }
+            cur_node = cur_node -> get(c);
+        }
+        return cur_node -> getWord();
+    }
+    int countPrefixes(string s){
+        Node* cur_node = root;
+        for(char c : s){
+            if(!cur_node -> contains(c)){
+                return 0;
+            }
+            cur_node = cur_node -> get(c);
+        }
+        return cur_node -> getPre();
+    }
+    void erase(string s){
+        Node* cur_node = root;
+        for(char c : s){
+            if(!cur_node -> contains(c)){
+                return;
+            }
+            cur_node = cur_node -> get(c);
+            cur_node -> decreasePre();
+        }
+        cur_node -> decreaseWord();
+    }
+};
