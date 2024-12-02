@@ -1,0 +1,141 @@
+//! In The Name Of Allah
+ 
+/*********************************************************************\
+*!          |       *        |       | ___  | @                       |
+*!          |      * *       |       |  |   |  @                      |
+*!          |     *   *      |       |  |   |   @                     |
+*!          |    *******     |-------|  |   |    @                    |
+*! |*       |   *       *    |       |  |   |   @                     |
+*! |        |  *         *   |       |  |   |  @                      |
+*! |________| *           *  |       | ___  | @                       |
+*!                                                                    |
+*!  codeforces = __Jahid__Noob__                                      |
+*!  mail =  2227Jahid@gmail.com                                       |
+*!  IIT,Jahangirnagar University(41)                                  |
+*!                                                                    |
+**********************************************************************/
+ 
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long
+#define endl '\n'
+#define pb push_back
+#define pob pop_back
+#define make M
+#define F first
+#define S second
+#define all(s) (s).begin(), (s).end()
+#define rall(s) s.rbegin(), s.rend()
+#define sz(x) (int)x.size()
+#define mem(a, b) memset(a, b, sizeof(a))
+#define log2(x) 31 - __builtin_clz(x)
+#define getbit(n, i) (((n) & (1LL << (i))) != 0)
+#define msb(x) 31 - __builtin_clz(x)
+#define TxtIO                         \
+    freopen("sample.in", "r", stdin); \
+    freopen("sample.out", "w", stdout);
+#define Fokinnir_moto_kaj_koris_na \
+    ios_base::sync_with_stdio(0);  \
+    cin.tie(0);                    \
+    cout.tie(0);
+#define py cout << "YES" << endl
+#define pn cout << "NO" << endl
+#define PI acos(-1)
+ 
+typedef long long ll;
+typedef vector<int> vi;
+typedef vector<vi> vvi;
+typedef pair<int, int> pii;
+typedef vector<pii> vii;
+typedef tuple<int,int,int> tu;
+typedef array<int,3> triple;
+/*
+int p = 237,mod = 1000000289;
+auto Goriber_function = [&] (int m) -> int{
+ 
+};
+*/
+const ll N = 2e5+5;
+const ll mod = 1e9 + 7;
+const ll inf = 1e18;
+
+struct Node{
+    Node* links[2];
+    bool contains(int bit){
+        return (links[bit] != NULL);
+    }
+    void put(int bit, Node* node){
+        links[bit] = node;
+    }
+    Node* get(int bit){
+        return links[bit];
+    }
+};
+
+class Trie{
+private:
+    Node *root;
+
+public:
+    Trie(){
+        root = new Node();
+    }
+    void insert(int num){
+        Node* cur_node = root;
+        for(int i = 31; i >= 0; i--){
+            int bit = (num >> i) & 1;
+            if(!cur_node -> contains(bit)){
+                cur_node -> put(bit, new Node());
+            } 
+            cur_node = cur_node -> get(bit);
+        }
+    }
+    int getMax(int num){
+        Node* cur_node = root;
+        int mx = 0;
+        for(int i = 31; i >= 0; i--){
+            int bit = (num >> i) & 1;
+            if(cur_node -> contains(bit ^ 1)){
+                mx = ((1LL << i) | mx);
+                cur_node = cur_node -> get(bit ^ 1);
+            }
+            else{
+                cur_node = cur_node -> get(bit);
+            }
+        }
+        return mx;
+    }
+    
+};
+
+void Goriber_solve()
+{
+    int n,m;
+    Trie trie;
+    cin >> n >> m;
+    for(int i = 0; i < n; i++){
+        int x;
+        cin >> x;
+        trie.insert(x);
+    }
+    int ans = 0;
+    for(int i = 0; i < m; i++){
+        int x;
+        cin >> x;
+        ans = max(ans, trie.getMax(x));
+    }
+    cout << ans << endl;
+}
+signed main()
+{
+ 
+    Fokinnir_moto_kaj_koris_na
+    int _ = 1,tc = 0;
+    cin >> _;
+    while (_--)
+    {
+        //cout<<"Case "<<++tc<<": ";
+        Goriber_solve();
+    }
+}
