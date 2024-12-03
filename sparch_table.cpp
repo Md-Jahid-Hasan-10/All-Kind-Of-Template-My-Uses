@@ -31,7 +31,8 @@ int query(int l, int r)
 	return combine(spt[l][j], spt[r - (1 << j) + 1][j]);
 }
 
-//! 0 based index -> query O(1),pre compute nlog(n) and support idempotent funtion f(a,a) = a
+//! 0 based index -> query O(1),pre compute nlog(n) and support idempotent funtion f(a,a) = a 
+//! minimum, maximum, GCD, and XOR
 signed main()
 {
 
