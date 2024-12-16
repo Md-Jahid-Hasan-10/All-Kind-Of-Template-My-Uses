@@ -1,5 +1,13 @@
 /// In The Name Of Allah
-
+String to number with mod / string divided with mod ?
+int multi(string s,int mod)
+{
+    int ans = 0;
+    for(int i = 0; i < sz(s); i++){
+        ans = (ans * 10 + (s[i] - '0')) % mod;
+    }
+    return ans; // if ans == 0 then mod divided this string
+}
 #include <bits/stdc++.h>
 
 using namespace std;
