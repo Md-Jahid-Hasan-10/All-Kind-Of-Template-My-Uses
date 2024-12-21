@@ -1,46 +1,34 @@
 #include<bits/stdc++.h>
 
 using namespace std;
-typedef long long ll;
-const ll N = 1e5;
-vector<int> graph[N];
-int Level[N],parent[N];
-void dfs(int node,int par,int lev)
-{
-    Level[node] = lev;
-    parent[node] = par;
-    for(auto u : graph[node]){
-        if(u != par){
-            dfs(u,node,lev+1);
-        }
-    }
-}
-int main()
-{
-    int n;
-    cin >> n;
-    for(int i = 1; i < n; i++){
-        int u,v;
-        cin >> u >> v;
-        graph[u].push_back(v);
-        graph[v].push_back(u);
-    }
-    dfs(1,0,0);
-    for(int i = 1; i <= n; i++){
-        cout << i <<" p -> " << parent[i] <<" Lev -> " << Level[i] << endl;
-    }
-    int node,k;
-    cin >> node >> k;
-    if(Level[node] < k){
-        cout << -1 << endl;
-    }
-    else{
-        int kth_par;
-        while(k--){
-            kth_par = parent[node];
-            node = kth_par;
-        }
-        cout << kth_par << endl;
-    }
+const ll N = 2e5+12;
+const ll M = 30;
+const ll mod = 1e9 + 7;
+const ll inf = 1e18;
 
+void Goriber_solve()
+{
+    int n,q;
+    cin >> n >> q;
+    vector<vector<int>> dp(n+1,vector<int>(M+2,0));
+    for(int i = 1; i <= n; i++){
+        int x;
+        cin >> x;
+        dp[i][0] = x;
+    }
+    for(int j = 1; j < M; j++){
+        for(int i = 1; i <= n; i++){
+            dp[i][j] = dp[dp[i][j-1]][j-1];
+        }
+    }
+    while(q--){
+        int node,k;
+        cin >> node >> k;
+        for(int i = 0; i < M; i++){
+            if(k & (1 << i)){
+                node = dp[node][i];
+            }
+        }
+        cout << node << endl;
+    }
 }
