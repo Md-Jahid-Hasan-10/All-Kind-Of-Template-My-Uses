@@ -1,0 +1,128 @@
+//! In The Name Of Allah
+/*********************************************************************\
+*!          |       *        |       | ___  | @                       |
+*!          |      * *       |       |  |   |  @                      |
+*!          |     *   *      |       |  |   |   @                     |
+*!          |    *******     |-------|  |   |    @                    |
+*! |*       |   *       *    |       |  |   |   @                     |
+*! |        |  *         *   |       |  |   |  @                      |
+*! |________| *           *  |       | ___  | @                       |
+*!                                                                    |
+*!  codeforces = __Jahid__Noob__                                      |
+*!  codechef = jam_coder420                                           |
+*!  atcoder = jam_coder                                               |
+*!  mail =  2227Jahid@gmail.com                                       |
+*!  IIT,Jahangirnagar University(41)                                  |
+*!                                                                    |
+**********************************************************************/
+ 
+#include <bits/stdc++.h>
+using namespace std;
+
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+template <class T>
+using ordered_set = tree<T,null_type,less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+#define int long long
+#define endl '\n'
+#define pb push_back
+#define pob pop_back
+#define make M
+#define F first
+#define S second
+#define all(s) (s).begin(), (s).end()
+#define rall(s) s.rbegin(), s.rend()
+#define sz(x) (int)x.size()
+#define mem(a, b) memset(a, b, sizeof(a))
+#define log2(x) 31 - __builtin_clz(x)
+#define getbit(n, i) (((n) & (1LL << (i))) != 0)
+#define msb(x) 31 - __builtin_clz(x)
+#define TxtIO                         \
+    freopen("sample.in", "r", stdin); \
+    freopen("sample.out", "w", stdout);
+#define Fokinnir_moto_kaj_koris_na \
+    ios_base::sync_with_stdio(0);  \
+    cin.tie(0);                    \
+    cout.tie(0);
+#define py cout << "YES" << endl
+#define pn cout << "NO" << endl
+#define PI acos(-1)
+ 
+typedef long long ll;
+typedef vector<int> vi;
+typedef vector<vi> vvi;
+typedef pair<int, int> pii;
+typedef vector<pii> vii;
+typedef tuple<int,int,int> tu;
+typedef array<int,3> triple;
+/*
+int p = 237,mod = 1000000289;
+auto Goriber_function = [&] (int m) -> int{
+ 
+};
+*/
+const ll N = 2e5 + 312;
+const ll mod = 1e9 + 7;
+vii graph[N];
+vi path,deg;
+bool vis[N];
+int n,m;
+
+/*
+all the edges should be in the same connected component
+#undirected graph: euler path: all degrees are even or exactly two of them are odd.
+#undirected graph: euler circuit: all degrees are even
+*/
+
+void dfs(int node)
+{
+    while(sz(graph[node])){
+        auto child = graph[node].back();
+        graph[node].pop_back();
+        if(vis[child.S])continue;
+        vis[child.S] = true;
+        dfs(child.F);
+    }
+    path.pb(node);
+}
+
+void Goriber_solve()
+{
+    cin >> n >> m;
+    deg.resize(n+1,0);
+    for(int i = 0; i < m; i++){
+        int u,v;
+        cin >> u >> v;
+        graph[u].pb({v,i});
+        graph[v].pb({u,i});
+        deg[u]++;
+        deg[v]++;
+    }
+    for(int i = 1; i <= n; i++){
+        if(deg[i] & 1){
+            cout << "IMPOSSIBLE" << endl;
+            return;
+        }
+    }
+    dfs(1);
+    if(sz(path) != m + 1){
+        cout << "IMPOSSIBLE" << endl;
+    }
+    else{
+        for(auto u : path)cout << u << " ";
+        cout << endl;
+    }
+}
+signed main()
+{
+ 
+    Fokinnir_moto_kaj_koris_na
+    int _ = 1,tc = 0;
+    //cin >> _;
+    while (_--)
+    {
+        //cout<<"Case "<<++tc<<": ";
+        Goriber_solve();
+    }
+}
