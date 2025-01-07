@@ -66,18 +66,17 @@ struct rH{
     rH(string s): s(s),n(sz(s)),pw(n+1),vl(n+1){
         pw[0] = 1,vl[0] = 0;
         for(int i = 0; i < n; i++){
-            vl[i+1] = (vl[i] * k % mod + s[i]) % mod;
-            pw[i+1] = (pw[i] * k) % mod;
+            vl[i+1] = (1LL *vl[i] * k % mod + s[i]) % mod;
+            pw[i+1] = (1LL*pw[i] * k) % mod;
         }
     }
     int h(int l){
         return vl[l];
     }
     int h(int l,int r){
-        return (h(r+1) - (h(l) * pw[r-l+1]) % mod + mod) % mod;
+        return (h(r+1) - (1LL*h(l) * pw[r-l+1]) % mod + mod) % mod;
     }
 };
-
 struct r_H{
     const int k = 237,mod = 1000000289;
     string s;
@@ -86,15 +85,15 @@ struct r_H{
     r_H(string s): s(s),n(sz(s)),pw(n+1),vl(n+1){
         pw[0] = 1,vl[0] = 0;
         for(int i = 0; i < n; i++){
-            vl[i+1] = (vl[i] * k % mod + s[i]) % mod;
-            pw[i+1] = (pw[i] * k) % mod;
+            vl[i+1] = (1LL*vl[i] * k % mod + s[i]) % mod;
+            pw[i+1] = (1LL*pw[i] * k) % mod;
         }
     }
     int h(int l){
         return vl[l];
     }
     int h(int l,int r){
-        return (h(r+1) - (h(l) * pw[r-l+1]) % mod + mod) % mod;
+        return (h(r+1) - (1LL*h(l) * pw[r-l+1]) % mod + mod) % mod;
     }
 };
 
