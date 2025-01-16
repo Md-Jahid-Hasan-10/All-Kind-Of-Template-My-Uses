@@ -5,12 +5,12 @@ typedef long long ll;
 const ll N = 1e5;
 vector<int> graph[N];
 int Level[N];
-int dp[N][20];
+int dp[N][22];
 
 void dfs(int node,int par,int lev){
     dp[node][0] = par;
     Level[node] = lev;
-    for(int i = 1; i <= 16; i++){
+    for(int i = 1; i <= 20; i++){
         dp[node][i] = dp[dp[node][i-1]][i-1];
     }
     for(auto child : graph[node]){
@@ -21,7 +21,7 @@ void dfs(int node,int par,int lev){
 }
 int get_kth_par(int node,int k)
 {
-    for(int i = 16; i >= 0; i--){
+    for(int i = 20; i >= 0; i--){
         if((k >> i) & 1){
             node = dp[node][i];
         }
@@ -38,7 +38,7 @@ int get_lca(int a,int b)
         if(a == b){
             return a;
         }
-        for(int i = 16; i >= 0; i--){
+        for(int i = 20; i >= 0; i--){
             if(dp[a][i] != dp[b][i]){
                 a = dp[a][i];
                 b = dp[b][i];
