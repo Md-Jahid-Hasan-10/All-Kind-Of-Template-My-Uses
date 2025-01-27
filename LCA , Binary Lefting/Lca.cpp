@@ -31,22 +31,21 @@ int get_kth_par(int node,int k)
 int get_lca(int a,int b)
 {
     if(Level[a] > Level[b]){
-            swap(a,b);
+        swap(a,b);
+    }
+    int k = Level[b] - Level[a];
+    b = get_kth_par(b,k);
+    if(a == b){
+        return a;
+    }
+    for(int i = 20; i >= 0; i--){
+        if(dp[a][i] != dp[b][i]){
+            a = dp[a][i];
+            b = dp[b][i];
         }
-        int k = Level[b] - Level[a];
-        b = get_kth_par(b,k);
-        if(a == b){
-            return a;
-        }
-        for(int i = 20; i >= 0; i--){
-            if(dp[a][i] != dp[b][i]){
-                a = dp[a][i];
-                b = dp[b][i];
-            }
-        }
-        return dp[a][0];
+    }
+    return dp[a][0];
 }
-
 int main()
 {
     int n;
