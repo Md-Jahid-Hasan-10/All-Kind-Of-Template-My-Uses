@@ -4,7 +4,7 @@ using namespace std;
 class SegmentTree {
     vector<long long> tree, lazy;
     int n;
-    int conbine(int x,int y){
+    int combine(int x,int y){
         return max(x,y);
     }
     void build(int node, int start, int end, const vector<int>& arr) {
