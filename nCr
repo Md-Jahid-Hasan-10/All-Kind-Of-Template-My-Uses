@@ -41,3 +41,12 @@ int nCr(int n,int r)
     ll res = (up * down) % mod;
     return res;
 }
+int nPr(int n,int r)
+{
+    if(n < r)return 0ll;
+    ll up = fact[n];
+    int down = (fact[n-r]) % mod;
+    down = power(down,mod-2,mod);
+    ll res = (up * down) % mod;
+    return res;
+}
