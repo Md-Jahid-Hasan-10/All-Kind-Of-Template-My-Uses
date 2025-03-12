@@ -1,4 +1,6 @@
 /// In The Name Of Allah
+
+/// mt19937 mt(chrono::steady_clock::now().time_since_epoch().count());
 String to number with mod / string divided with mod ?
 int multi(string s,int mod)
 {
