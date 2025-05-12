@@ -1,0 +1,20 @@
+typedef long long i64;
+struct Point {
+    i64 x, y;
+    Point(i64 x, i64 y) : x(x), y(y) {}
+};
+i64 direction(const Point &p1, const Point &p2, const Point &p3) {
+    return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
+}
+inline bool inConvexPoly(point *C, int nc, const point &p) {
+    int st = 1, en = nc - 1, mid;
+    while(en - st > 1) {
+        mid = (st + en)>>1;
+        if(direction(C[0], C[mid], p) < 0) en = mid;
+        else st = mid;
+    }
+    if(direction(C[0], C[st], p) < 0) return false;
+    if(direction(C[st], C[en], p) < 0) return false;
+    if(direction(C[en], C[0], p) < 0) return false;
+    return true;
+}
