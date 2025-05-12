@@ -1,0 +1,36 @@
+#include <iostream>
+using namespace std;
+typedef double dl;
+// Function to calculate determinant
+dl det(dl x1, dl y1, dl x2, dl y2) {
+    return x1 * y2 - y1 * x2;
+}
+// Function to check for intersection and return the intersection point
+pair<dl, dl> segmentIntersection(dl x1, dl y1, dl x2, dl y2, dl x3, dl y3, dl x4, dl y4) {
+    dl dx1 = x2 - x1, dy1 = y2 - y1;
+    dl dx2 = x4 - x3, dy2 = y4 - y3;
+    dl denom = det(dx1, dy1, dx2, dy2); // Determinant
+    // If denominator is 0, the segments are parallel
+    if (denom == 0) return {1e9,1e9}; // No intersection
+    // Calculate intersection point using parametric equations
+    dl dx3 = x3 - x1, dy3 = y3 - y1;
+    dl t = det(dx3, dy3, dx2, dy2) / denom;
+    dl u = det(dx3, dy3, dx1, dy1) / denom;
+    // Check if the intersection point lies within both segments
+    if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+        dl ix = x1 + t * dx1, iy = y1 + t * dy1;
+        return {ix, iy}; // Return intersection point
+    }
+    return {1e9,1e9}; // No intersection
+}
+int main() {
+    // Example segments (A-B) and (C-D)
+    dl x1 = 1, y1 = 1, x2 = 5, y2 = 5;  // Segment 1
+    dl x3 = 1, y3 = 5, x4 = 5, y4 = 1;  // Segment 2
+    auto intersection = segmentIntersection(x1, y1, x2, y2, x3, y3, x4, y4);
+    if (intersection.first != 1e9 || intersection.second != 1e9)
+        cout << "Intersection at: (" << intersection.first << ", " << intersection.second << ")\n";
+    else
+        cout << "No intersection.\n";
+    return 0;
+}
