@@ -1,0 +1,16 @@
+// Function to calculate the distance from point C to line segment AB
+double linePointDist(int A[], int B[], int C[], bool isSegment) {
+    int ABx = B[0] - A[0], ABy = B[1] - A[1];
+    int ACx = C[0] - A[0], ACy = C[1] - A[1];
+    int BCx = C[0] - B[0], BCy = C[1] - B[1];
+
+    double crossProd = ABx * ACy - ABy * ACx;
+    double ABLength = sqrt(ABx * ABx + ABy * ABy);
+    double dist = fabs(crossProd) / ABLength;
+
+    if (isSegment) {
+        if ((ABx * BCx + ABy * BCy) > 0) return sqrt(BCx * BCx + BCy * BCy);  // Distance to B
+        if ((-ABx * ACx - ABy * ACy) > 0) return sqrt(ACx * ACx + ACy * ACy);  // Distance to A
+    }
+    return abs(dist);
+}
