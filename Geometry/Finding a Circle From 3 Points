@@ -1,0 +1,26 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+// Typedef for double as dl
+typedef double dl;
+// Function to find the center of the circle given 3 points
+pair<dl, dl> findCircleCenter(dl x1, dl y1, dl x2, dl y2, dl x3, dl y3) {
+    // Midpoints of XY and YZ
+    dl mx1 = (x1 + x2) / 2, my1 = (y1 + y2) / 2, mx2 = (x2 + x3) / 2, my2 = (y2 + y3) / 2;
+    // Perpendicular bisector coefficients
+    dl A1 = y2 - y1, B1 = x1 - x2, A2 = y3 - y2, B2 = x2 - x3;
+    // Determinant to solve the system of equations
+    dl det = A1 * B2 - A2 * B1;
+    dl cx = (B2 * (A1 * mx1 - A2 * mx2) - B1 * (A1 * mx2 - A2 * mx1)) / det;
+    dl cy = (A1 * (B2 * my2 - B1 * my1) - A2 * (B1 * my1 - B2 * my2)) / det;
+    return {cx, cy};
+}
+int main() {
+    // Example points X(1,1), Y(4,4), Z(6,1)
+    dl x1 = 1, y1 = 1, x2 = 4, y2 = 4, x3 = 6, y3 = 1;
+    // Call the function to find the center
+    auto center = findCircleCenter(x1, y1, x2, y2, x3, y3);
+    // Output the center
+    cout << "Center: (" << center.first << ", " << center.second << ")\n";
+    return 0;
+}
