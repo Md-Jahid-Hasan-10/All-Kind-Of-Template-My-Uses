@@ -1,0 +1,55 @@
+#include <iostream>
+using namespace std;
+
+typedef long long i64;
+
+struct Point {
+    i64 x, y;
+    Point() : x(0), y(0) {}
+    Point(i64 x, i64 y) : x(x), y(y) {}
+};
+
+// Function to calculate the cross product (direction) of vectors (p1p2) and (p1p3)
+i64 direction(const Point &p1, const Point &p2, const Point &p3) {
+    return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
+}
+
+// Function to check if point p3 lies on the segment p1p2
+bool onsegment(const Point &p1, const Point &p2, const Point &p3) {
+    return min(p1.x, p2.x) <= p3.x && p3.x <= max(p1.x, p2.x) &&
+           min(p1.y, p2.y) <= p3.y && p3.y <= max(p1.y, p2.y);
+}
+
+// Function to check if two segments (p1p2) and (p3p4) intersect
+inline bool intersect(const Point &p1, const Point &p2, const Point &p3, const Point &p4) {
+    i64 d1, d2, d3, d4;
+    d1 = direction(p3, p4, p1);  // Direction of (p3, p4, p1)
+    d2 = direction(p3, p4, p2);  // Direction of (p3, p4, p2)
+    d3 = direction(p1, p2, p3);  // Direction of (p1, p2, p3)
+    d4 = direction(p1, p2, p4);  // Direction of (p1, p2, p4)
+
+    // General case: Segments (p1p2) and (p3p4) intersect if directions differ
+    if (((d1 < 0 && d2 > 0) || (d1 > 0 && d2 < 0)) && ((d3 < 0 && d4 > 0) || (d3 > 0 && d4 < 0)))
+        return true;
+
+    // Special cases: Check if the points are collinear and lie on the segment
+    if (!d3 && onsegment(p1, p2, p3)) return true;  // p3 is on segment (p1p2)
+    if (!d4 && onsegment(p1, p2, p4)) return true;  // p4 is on segment (p1p2)
+    if (!d1 && onsegment(p3, p4, p1)) return true;  // p1 is on segment (p3p4)
+    if (!d2 && onsegment(p3, p4, p2)) return true;  // p2 is on segment (p3p4)
+
+    return false;
+}
+
+int main() {
+    Point p1(1, 1), p2(10, 10);  // Segment 1
+    Point p3(1, 10), p4(10, 1);  // Segment 2
+
+    if (intersect(p1, p2, p3, p4)) {
+        cout << "The segments intersect." << endl;
+    } else {
+        cout << "The segments do not intersect." << endl;
+    }
+
+    return 0;
+}
