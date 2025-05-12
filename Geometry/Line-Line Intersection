@@ -1,0 +1,19 @@
+typedef double dl;  // Define dl as an alias for double
+// Check if point (px, py) is on the segment
+bool isPointOnSegment(dl px, dl py, dl x1, dl y1, dl x2, dl y2) {
+    return min(x1, x2) <= px && px <= max(x1, x2) && min(y1, y2) <= py && py <= max(y1, y2);
+}
+// Function to find intersection of two line segments
+pair<bool, pair<dl, dl>> doSegmentsIntersect(dl x1, dl y1, dl x2, dl y2, dl x3, dl y3, dl x4, dl y4) {
+    dl det = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+    if (det == 0) {
+        return {false, {0, 0}}; // No intersection (parallel lines)
+    }
+    dl ix = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / det;
+    dl iy = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / det;
+    // Check if the intersection point lies within both segments
+    if (isPointOnSegment(ix, iy, x1, y1, x2, y2) && isPointOnSegment(ix, iy, x3, y3, x4, y4)) {
+        return {true, {ix, iy}}; // Return intersection point
+    }
+    return {false, {0, 0}}; // No intersection within segments
+}
