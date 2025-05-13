@@ -4,7 +4,7 @@ struct Point {
     Point() : x(0), y(0) {}
     Point(int a, int b) : x(a), y(b) {}
 };
-i64 direction(const Point &p1, const Point &p2, const Point &p3) {
+int direction(const Point &p1, const Point &p2, const Point &p3) {
     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
 inline bool inConvexPoly(point *C, int nc, const point &p) {
