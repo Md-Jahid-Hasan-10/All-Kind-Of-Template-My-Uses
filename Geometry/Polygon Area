@@ -1,6 +1,5 @@
 /*
 P[] holds the points, must be either in cw or ccw
-function returns double of the area.
 */
 inline int PolygoneArea(int np) {
     int area = 0;
