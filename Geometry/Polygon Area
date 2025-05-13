@@ -2,10 +2,10 @@
 P[] holds the points, must be either in cw or ccw
 function returns double of the area.
 */
-inline int dArea(int np) {
+inline int PolygoneArea(int np) {
     int area = 0;
     for(int i = 0; i < np; i++) {
         area += p[i].x*p[i+1].y - p[i].y*p[i+1].x;
     }
-    return abs(area);
+    return abs(area) / 2;
 }
