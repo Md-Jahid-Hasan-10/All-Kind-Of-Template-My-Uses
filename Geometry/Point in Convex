@@ -1,6 +1,7 @@
 typedef long long i64;
 struct Point {
     int x, y;
+    Point() : x(0), y(0) {}
     Point(int a, int b) : x(a), y(b) {}
 };
 i64 direction(const Point &p1, const Point &p2, const Point &p3) {
