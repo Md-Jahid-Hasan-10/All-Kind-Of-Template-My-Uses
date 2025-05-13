@@ -4,7 +4,7 @@ P[] holds the points, must be either in cw or ccw
 inline int PolygoneArea(int np) {
     int area = 0;
     for(int i = 0; i < np; i++) {
-        area += p[i].x*p[i+1].y - p[i].y*p[i+1].x;
+        area += p[i].x*p[(i+1) % np].y - p[i].y*p[(i+1) % np].x;
     }
     return abs(area) / 2;
 }
