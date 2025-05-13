@@ -5,8 +5,7 @@ typedef long long int;
 
 struct Point {
     int x, y;
-    Point() : x(0), y(0) {}
-    Point(int x, int y) : x(x), y(y) {}
+    Point(int a, int b) : x(a), y(b) {}
 };
 // Function to calculate the cross product (direction) of vectors (p1p2) and (p1p3)
 int direction(const Point &p1, const Point &p2, const Point &p3) {
