@@ -1,0 +1,47 @@
+struct Point {
+    int x, y;
+    Point() : x(0), y(0) {}
+    Point(int a, int b) : x(a), y(b) {}
+};
+// Check if point c lies on segment ab
+bool onSegment(const Point& a, const Point& b, const Point& c) {
+    // Check collinearity
+    ll cross = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+    if (cross != 0) return false;
+    // Check if c is within the bounding box of a and b
+    bool inX = (min(a.x, b.x) <= c.x) && (c.x <= max(a.x, b.x));
+    bool inY = (min(a.y, b.y) <= c.y) && (c.y <= max(a.y, b.y));
+    return inX && inY;
+}
+// Determine if a point is inside, outside, or on the boundary of a polygon
+string pointInPolygon(const vector<Point>& polygon, const Point& p) {
+    int n = polygon.size();
+    bool onBoundary = false;
+    // Check if the point is on any boundary edge
+    for (int i = 0; i < n; ++i) {
+        Point a = polygon[i];
+        Point b = polygon[(i + 1) % n];
+        if (onSegment(a, b, p)) {
+            return "BOUNDARY";
+        }
+    }
+    // Ray casting algorithm
+    int count = 0;
+    for (int i = 0; i < n; ++i) {
+        Point a = polygon[i];
+        Point b = polygon[(i + 1) % n];
+        // Check if the point is between the y-coordinates of the edge
+        if ((a.y > p.y) != (b.y > p.y)) {
+            // Calculate the x-intersection of the edge with the horizontal ray
+            double xIntersect = (double)(b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x;
+            if (p.x <= xIntersect) {
+                count++;
+            }
+        }
+    }
+    if (count % 2 == 1) {
+        return "INSIDE";
+    } else {
+        return "OUTSIDE";
+    }
+}
