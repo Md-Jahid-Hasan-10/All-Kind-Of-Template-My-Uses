@@ -1,13 +1,13 @@
-typedef long long i64;
 struct Point {
     int x, y;
     Point() : x(0), y(0) {}
     Point(int a, int b) : x(a), y(b) {}
-};
+}C[100006];
+
 int direction(const Point &p1, const Point &p2, const Point &p3) {
     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
-inline bool inConvexPoly(point *C, int nc, const point &p) {
+inline bool inConvexPoly(int nc, const Point &p) {
     int st = 1, en = nc - 1, mid;
     while(en - st > 1) {
         mid = (st + en)>>1;
