@@ -12,6 +12,9 @@ bool onsegment(const Point &p1, const Point &p2, const Point &p3) {
     return min(p1.x, p2.x) <= p3.x && p3.x <= max(p1.x, p2.x) &&
            min(p1.y, p2.y) <= p3.y && p3.y <= max(p1.y, p2.y);
 }
+point vec(point a, point b){
+    return {b.x - a.x, b.y - a.y};
+}
 dl dot(point a, point b) {
     return a.x * b.x + a.y * b.y;
 }
