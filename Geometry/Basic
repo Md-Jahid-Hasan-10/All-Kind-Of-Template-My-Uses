@@ -1,0 +1,19 @@
+
+dl dot(point a, point b) {
+    return a.x * b.x + a.y * b.y;
+}
+dl norm(point a) {
+    return dot(a, a);
+}
+double abs(point a) {
+    return sqrt(norm(a));
+}
+double angle(point a, point b) {
+    return acos(dot(a, b) / abs(a) / abs(b));
+}
+int triArea2(const point &a, const point &b, const point &c) {
+    return (a.x*(b.y-c.y) + b.x*(c.y-a.y) + c.x*(a.y-b.y));
+}
+int sqDist(const point &a, const point &b) {
+    return ((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
+}
