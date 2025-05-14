@@ -47,3 +47,11 @@ dl angle(dl a, dl b,dl c){
     alpha = alpha*180.0/PI;//angle (ABC)
     return alpha;
 }
+dl Slope(Point a, Point b)
+{
+    if(a.x == b.x && a.y == b.y)return oo;
+    double dx = b.x - a.x;
+    double dy = b.y - a.y;
+    if(dx == 0)return oo;
+    return (double)dy / dx;
+}
