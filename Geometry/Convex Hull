@@ -40,6 +40,12 @@ void convexHull(int &np, int &nc) {
     swap(P[0], P[pos]);
     P0 = P[0];
     sort(&P[1], &P[np], comp);
+    j = np - 1,i = np - 1;
+    while(j > 0 && triArea2(P0, P[j], P[j-1]) == 0)j--;
+    while(i > j){
+        swap(P[i], P[j]);
+        i--,j++;
+    }
     for(i = 0; i < 3; i++) C[i] = P[i];
     for(i = j = 3; i < np; i++) {
         while(triArea2(C[j-2], C[j-1], P[i]) < 0) j--;
