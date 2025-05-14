@@ -15,14 +15,23 @@ bool onsegment(const Point &p1, const Point &p2, const Point &p3) {
 point vec(point a, point b){
     return {b.x - a.x, b.y - a.y};
 }
-dl dot(point a, point b) {
-    return a.x * b.x + a.y * b.y;
+dl sqnorm(point a){
+    return (a.x*a.x + a.y*a.y);
 }
-dl norm(point a) {
-    return dot(a, a);
+dl dot(point a, point b){
+    return (a.x*b.x + a.y*b.y);
+}
+dl angle(point a,point o,point b){
+    point oa = vec(o , a), ob = vec(o , b);
+    if(sqnorm(oa) == 0 || sqnorm(ob) == 0){
+        return 0;
+    }
+    double alpha = acos(dot(oa, ob) / sqrt(sqnorm(oa) * sqnorm(ob)));
+    alpha = alpha * 180 / PI;//angle in degree
+    return alpha;// angle of AOB
 }
 double abs(point a) {
-    return sqrt(norm(a));
+    return sqrt(sqnorm(a));
 }
 double angle(point a, point b) {
     return acos(dot(a, b) / abs(a) / abs(b));
