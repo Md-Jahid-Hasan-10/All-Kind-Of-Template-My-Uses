@@ -30,3 +30,8 @@ int triArea2(const point &a, const point &b, const point &c) {
 int sqDist(const point &a, const point &b) {
     return ((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
 }
+dl angle(dl a, dl b,dl c){
+    dl alpha = acos((b*b-c*c-a*a)/(-2*a*c));
+    alpha = alpha*180.0/PI;//angle (ABC)
+    return alpha;
+}
