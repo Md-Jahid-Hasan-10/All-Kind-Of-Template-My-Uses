@@ -1,4 +1,17 @@
-
+struct Point {
+    int x, y;
+    Point() : x(0), y(0) {}
+    Point(int a, int b) : x(a), y(b) {}
+};
+// Function to calculate the cross product (direction) of vectors (p1p2) and (p1p3)
+int direction(const Point &p1, const Point &p2, const Point &p3) {
+    return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
+}
+// Function to check if point p3 lies on the segment p1p2
+bool onsegment(const Point &p1, const Point &p2, const Point &p3) {
+    return min(p1.x, p2.x) <= p3.x && p3.x <= max(p1.x, p2.x) &&
+           min(p1.y, p2.y) <= p3.y && p3.y <= max(p1.y, p2.y);
+}
 dl dot(point a, point b) {
     return a.x * b.x + a.y * b.y;
 }
