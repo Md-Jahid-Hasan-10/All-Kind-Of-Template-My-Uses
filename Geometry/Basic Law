@@ -1,3 +1,7 @@
+Polygone n point and same distance s
+dl area_polygone=(n*s*s)/(4*(tan(PI/n)));
+dl redius_polygone = s / (2*sin(PI / n));
+glass area = ((pi*h)/3) *((r1*r1)+(r2*r2)+(r1*r2))
 N inner circle in One circle R
 dl theta = PI / n;
 dl r = (R * sin(theta)) / (1 + sin(theta));
