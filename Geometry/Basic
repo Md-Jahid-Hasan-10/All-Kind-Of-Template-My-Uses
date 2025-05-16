@@ -48,7 +48,7 @@ int sqDist(const point &a, const point &b) {
 }
 dl angle(dl a, dl b,dl c){
     dl alpha = acos((b*b-c*c-a*a)/(-2*a*c));
-    alpha = alpha*180.0/PI;//angle (ABC)
+    //alpha = alpha*180.0/PI;//angle (ABC) in degree
     return alpha;
 }
 dl Slope(Point a, Point b)
