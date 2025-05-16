@@ -1,10 +1,10 @@
-struct Point {
+struct point {
     int x, y;
     Point() : x(0), y(0) {}
     Point(int a, int b) : x(a), y(b) {}
 }C[100006];
 
-int direction(const Point &p1, const Point &p2, const Point &p3) {
+int direction(const point &p1, const point &p2, const point &p3) {
     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
 inline bool inConvexPoly(int nc, const Point &p) {
