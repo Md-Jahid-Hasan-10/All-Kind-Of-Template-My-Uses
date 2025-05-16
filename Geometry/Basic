@@ -1,3 +1,6 @@
+Polygone n point and same distance s
+dl area_polygone=(n*s*s)/(4*(tan(PI/n)));
+dl redius_polygone = s / (2*sin(PI / n));
 struct Point {
     int x, y;
     Point() : x(0), y(0) {}
