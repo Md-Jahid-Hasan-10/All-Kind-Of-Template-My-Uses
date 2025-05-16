@@ -1,0 +1,7 @@
+N inner circle in One circle R
+dl theta = PI / n;
+dl r = (R * sin(theta)) / (1 + sin(theta));
+dl area = PI*r*r;
+dl E = (R - r);
+dl AreaNotcoverInner = ((n * r * r) / tan(theta)) - (area * (n - 2)) / 2.0;
+dl AreaNotcoverOuter = Area - n * area - AreaNotcoverInner;
