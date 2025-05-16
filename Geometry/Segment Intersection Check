@@ -3,22 +3,22 @@ using namespace std;
 
 typedef long long int;
 
-struct Point {
+struct point {
     int x, y;
-    Point() : x(0), y(0) {}
-    Point(int a, int b) : x(a), y(b) {}
+    point() : x(0), y(0) {}
+    point(int a, int b) : x(a), y(b) {}
 };
 // Function to calculate the cross product (direction) of vectors (p1p2) and (p1p3)
-int direction(const Point &p1, const Point &p2, const Point &p3) {
+int direction(const point &p1, const point &p2, const point &p3) {
     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
 // Function to check if point p3 lies on the segment p1p2
-bool onsegment(const Point &p1, const Point &p2, const Point &p3) {
+bool onsegment(const point &p1, const point &p2, const point &p3) {
     return min(p1.x, p2.x) <= p3.x && p3.x <= max(p1.x, p2.x) &&
            min(p1.y, p2.y) <= p3.y && p3.y <= max(p1.y, p2.y);
 }
 // Function to check if two segments (p1p2) and (p3p4) intersect
-inline bool intersect(const Point &p1, const Point &p2, const Point &p3, const Point &p4) {
+inline bool intersect(const point &p1, const point &p2, const point &p3, const point &p4) {
     int d1, d2, d3, d4;
     d1 = direction(p3, p4, p1);  // Direction of (p3, p4, p1)
     d2 = direction(p3, p4, p2);  // Direction of (p3, p4, p2)
@@ -37,8 +37,8 @@ inline bool intersect(const Point &p1, const Point &p2, const Point &p3, const P
 }
 
 int main() {
-    Point p1(1, 1), p2(10, 10);  // Segment 1
-    Point p3(1, 10), p4(10, 1);  // Segment 2
+    point p1(1, 1), p2(10, 10);  // Segment 1
+    point p3(1, 10), p4(10, 1);  // Segment 2
 
     if (intersect(p1, p2, p3, p4)) {
         cout << "The segments intersect." << endl;
