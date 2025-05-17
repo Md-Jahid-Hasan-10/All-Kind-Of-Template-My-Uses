@@ -1,3 +1,5 @@
+radius of incircle r = A/s
+radius of circumcircle R=(a*b*c)/(4*A)
 a spherical cap with height H and R = H/2
 dl volume = (PI * h * h/ 3.0) * (3.0 * R - h);
 Polygone n point and same distance s
