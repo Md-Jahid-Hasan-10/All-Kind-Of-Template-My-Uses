@@ -3,22 +3,22 @@ using namespace std;
 
 typedef long long int;
 
-struct point {
+struct pt {
     int x, y;
-    point() : x(0), y(0) {}
-    point(int a, int b) : x(a), y(b) {}
+    pt() : x(0), y(0) {}
+    pt(int a, int b) : x(a), y(b) {}
 };
 // Function to calculate the cross product (direction) of vectors (p1p2) and (p1p3)
-int direction(const point &p1, const point &p2, const point &p3) {
+int direction(const pt &p1, const pt &p2, const pt &p3) {
     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
-// Function to check if point p3 lies on the segment p1p2
-bool onsegment(const point &p1, const point &p2, const point &p3) {
+// Function to check if pt p3 lies on the segment p1p2
+bool onsegment(const pt &p1, const pt &p2, const pt &p3) {
     return min(p1.x, p2.x) <= p3.x && p3.x <= max(p1.x, p2.x) &&
            min(p1.y, p2.y) <= p3.y && p3.y <= max(p1.y, p2.y);
 }
 // Function to check if two segments (p1p2) and (p3p4) intersect
-inline bool intersect(const point &p1, const point &p2, const point &p3, const point &p4) {
+inline bool intersect(const pt &p1, const pt &p2, const pt &p3, const pt &p4) {
     int d1, d2, d3, d4;
     d1 = direction(p3, p4, p1);  // Direction of (p3, p4, p1)
     d2 = direction(p3, p4, p2);  // Direction of (p3, p4, p2)
@@ -28,7 +28,7 @@ inline bool intersect(const point &p1, const point &p2, const point &p3, const p
     // General case: Segments (p1p2) and (p3p4) intersect if directions differ
     if (((d1 < 0 && d2 > 0) || (d1 > 0 && d2 < 0)) && ((d3 < 0 && d4 > 0) || (d3 > 0 && d4 < 0)))
         return true;
-    // Special cases: Check if the points are collinear and lie on the segment
+    // Special cases: Check if the pts are collinear and lie on the segment
     if (!d3 && onsegment(p1, p2, p3)) return true;  // p3 is on segment (p1p2)
     if (!d4 && onsegment(p1, p2, p4)) return true;  // p4 is on segment (p1p2)
     if (!d1 && onsegment(p3, p4, p1)) return true;  // p1 is on segment (p3p4)
@@ -37,8 +37,8 @@ inline bool intersect(const point &p1, const point &p2, const point &p3, const p
 }
 
 int main() {
-    point p1(1, 1), p2(10, 10);  // Segment 1
-    point p3(1, 10), p4(10, 1);  // Segment 2
+    pt p1(1, 1), p2(10, 10);  // Segment 1
+    pt p3(1, 10), p4(10, 1);  // Segment 2
 
     if (intersect(p1, p2, p3, p4)) {
         cout << "The segments intersect." << endl;
