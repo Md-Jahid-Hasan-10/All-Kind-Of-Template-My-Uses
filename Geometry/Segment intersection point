@@ -1,22 +1,22 @@
 #include <iostream>
 using namespace std;
 typedef double dl;
-struct point {
+struct pt {
     dl x, y;
-    point() : x(0), y(0) {}
-    point(dl x, dl y) : x(x), y(y) {}
+    pt() : x(0), y(0) {}
+    pt(dl x, dl y) : x(x), y(y) {}
 };
 // Cross product (direction) of vectors (p1p2) and (p1p3)
-dl direction(const point &p1, const point &p2, const point &p3) {
+dl direction(const pt &p1, const pt &p2, const pt &p3) {
     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
-// Check if point p lies on segment p1p2
-bool onSegment(const point &p1, const point &p2, const point &p) {
+// Check if pt p lies on segment p1p2
+bool onSegment(const pt &p1, const pt &p2, const pt &p) {
     return min(p1.x, p2.x) <= p.x && p.x <= max(p1.x, p2.x) &&
            min(p1.y, p2.y) <= p.y && p.y <= max(p1.y, p2.y);
 }
 // Function to find intersection of two line segments
-pair<bool, point> doSegmentsIntersect(const point &p1,const point &p2,const point &p3,const point &p4) {
+pair<bool, pt> doSegmentsIntersect(const pt &p1,const pt &p2,const pt &p3,const pt &p4) {
     // Calculate all direction values
     dl d1 = direction(p3, p4, p1);
     dl d2 = direction(p3, p4, p2);
@@ -24,18 +24,18 @@ pair<bool, point> doSegmentsIntersect(const point &p1,const point &p2,const poin
     dl d4 = direction(p1, p2, p4);
     // General case - segments straddle each other
     if (d1 * d2 < 0 && d3 * d4 < 0) {
-        //The exact coordinates of the intersection point using Cramer's Rule.
+        //The exact coordinates of the intersection pt using Cramer's Rule.
         dl det = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
         dl ix = ((p1.x*p2.y - p1.y*p2.x)*(p3.x - p4.x) - (p1.x - p2.x)*(p3.x*p4.y - p3.y*p4.x)) / det;
         dl iy = ((p1.x*p2.y - p1.y*p2.x)*(p3.y - p4.y) - (p1.y - p2.y)*(p3.x*p4.y - p3.y*p4.x)) / det;
-        return {true, point(ix, iy)};
+        return {true, pt(ix, iy)};
     }
-    // Special cases - endpoints on other segment
+    // Special cases - endpts on other segment
     if (d1 == 0 && onSegment(p3, p4, p1)) return {true, p1};
     if (d2 == 0 && onSegment(p3, p4, p2)) return {true, p2};
     if (d3 == 0 && onSegment(p1, p2, p3)) return {true, p3};
     if (d4 == 0 && onSegment(p1, p2, p4)) return {true, p4};
-    return {false, point(0,0)};
+    return {false, pt(0,0)};
 }
 int main() {
     // Example segments (A-B) and (C-D)
