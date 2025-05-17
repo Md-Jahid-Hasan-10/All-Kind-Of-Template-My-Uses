@@ -1,0 +1,27 @@
+struct pt{
+    double x,y;
+}a[1000],b[100],ans[1000];
+int k,id;
+int sqDist(const pt &a, const pt &b) {
+    return ((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
+}
+int orientation(pt a, pt b, pt c) {
+    double v = a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y);
+    if (v < 0) return +1; // counter-clockwise
+    if (v > 0) return -1; // clockwise
+    return 0;
+}
+void convex_hull(){
+    pt p0 = *min_element(a,a+k,[](pt a, pt b){
+        return make_pair(a.y,a.x)<make_pair(b.y,b.x);
+    });
+    sort(a,a+k,[&p0](const pt& a, const pt& b){
+        int o = orientation(p0,a,b);
+        if(o == 0) return sqDist(p0,a)<sqDist(p0,b);
+        return o < 0;
+    });
+    for(int i = 0;i < k;i++){
+        while(id>1 && orientation(ans[id-2],ans[id-1],a[i])>=0) id--;
+        ans[id++] = a[i];
+    }
+}
