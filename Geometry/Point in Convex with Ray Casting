@@ -1,10 +1,10 @@
-struct point {
+struct pt {
     int x, y;
-    point() : x(0), y(0) {}
-    point(int a, int b) : x(a), y(b) {}
+    pt() : x(0), y(0) {}
+    pt(int a, int b) : x(a), y(b) {}
 };
-// Check if point c lies on segment ab
-bool onSegment(const point& a, const point& b, const point& c) {
+// Check if pt c lies on segment ab
+bool onSegment(const pt& a, const pt& b, const pt& c) {
     // Check collinearity
     ll cross = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
     if (cross != 0) return false;
@@ -13,14 +13,14 @@ bool onSegment(const point& a, const point& b, const point& c) {
     bool inY = (min(a.y, b.y) <= c.y) && (c.y <= max(a.y, b.y));
     return inX && inY;
 }
-// Determine if a point is inside, outside, or on the boundary of a polygon
-string pointInPolygon(const vector<point>& polygon, const point& p) {
+// Determine if a pt is inside, outside, or on the boundary of a polygon
+string ptInPolygon(const vector<pt>& polygon, const pt& p) {
     int n = polygon.size();
     bool onBoundary = false;
-    // Check if the point is on any boundary edge
+    // Check if the pt is on any boundary edge
     for (int i = 0; i < n; ++i) {
-        point a = polygon[i];
-        point b = polygon[(i + 1) % n];
+        pt a = polygon[i];
+        pt b = polygon[(i + 1) % n];
         if (onSegment(a, b, p)) {
             return "BOUNDARY";
         }
@@ -28,9 +28,9 @@ string pointInPolygon(const vector<point>& polygon, const point& p) {
     // Ray casting algorithm
     int count = 0;
     for (int i = 0; i < n; ++i) {
-        point a = polygon[i];
-        point b = polygon[(i + 1) % n];
-        // Check if the point is between the y-coordinates of the edge
+        pt a = polygon[i];
+        pt b = polygon[(i + 1) % n];
+        // Check if the pt is between the y-coordinates of the edge
         if ((a.y > p.y) != (b.y > p.y)) {
             // Calculate the x-intersection of the edge with the horizontal ray
             double xIntersect = (double)(b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x;
