@@ -1,0 +1,26 @@
+//Returns minimum x for which a ^ x % m = b % m
+int baby_step(int a,int b,int m){
+    a%=m,b%=m;
+    int k=1,add=0,g;
+    while((g=__gcd(a,m))>1){
+        if(b==k)return add;
+        if(b%g)return -1;
+        b/=g,m/=g,add++;
+        k=(k*a/g)%m;
+    }
+    int n=sqrt(m)+1;
+    int mul=1;
+    for(int i=0;i<n;i++)
+        mul=(mul*a)%m;
+    unordered_map<int,int>val;
+    for(int q=0,cur=b;q<=n;q++){
+        val[cur]=q;
+        cur=(cur*a)%m;
+    }
+    for(int p=1,cur=k;p<=n;p++){
+        cur=(cur*mul)%m;
+        if(val.count(cur)){
+            return p*n-val[cur]+add;
+        }
+    }return -1;
+}
