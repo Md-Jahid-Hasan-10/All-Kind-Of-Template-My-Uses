@@ -21,6 +21,18 @@ dl sqnorm(pt a){
 dl dot(pt a, pt b){
     return (a.x*b.x + a.y*b.y);
 }
+pt rotateCCW(pt a,pt b,dl ang)
+{
+    pt v = {b.x-a.x,b.y-a.y};// vec from a to b
+    dl c = cos(ang),s = sin(ang);// ang is rediun
+    pt res = {v.x*c-v.y*s,v.x*s+v.y*c};
+    return res;//rotateCW is (-s put);
+}
+pt unit(pt a)
+{
+    double val = sqrt(a.x*a.x+a.y*a.y);
+    return pt(a.x/val,a.y/val);
+}
 dl angle(pt a,pt o,pt b){
     pt oa = vec(o , a), ob = vec(o , b);
     if(sqnorm(oa) == 0 || sqnorm(ob) == 0){
