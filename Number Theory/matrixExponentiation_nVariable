@@ -18,6 +18,12 @@ vector<vi>matExpo(vector<vi>& mat,int k,int n)
     if(k & 1)res=matMul(res,mat,n);
     return res;
 }
+/*
+F(k+1) =|mat^k|F(k)  |
+F(k) =  |     |F(k−1)|
+S(k) =  |     |S(k−1)|
+S(k−1) =|     |S(k−2)|
+*/
 vi mulBase(vector<vi>&mat,vi &base,int n)
 {
     vi res(n,0);
@@ -28,4 +34,37 @@ vi mulBase(vector<vi>&mat,vi &base,int n)
         }
     }
     return res;
+}
+void Goriber_solve()
+{
+    vi base = {1, 1, 1, 0};
+    int n = 4;
+    int x,y;
+    cin >> x >> y;
+    if(x == 0 && y == 0){
+        cout << 0 << endl;
+        return;
+    }
+    if(x == 0 && y == 1){
+        cout << 1 << endl;
+        return;
+    }
+    vector<vi>mat = {
+        {1, 1, 0, 0},
+        {1, 0, 0, 0},
+        {1, 0, 1, 0},
+        {0, 0, 1, 0}
+    };
+    int Sl = 0,Sr = 0;
+    if(x > 1){
+        vector<vi> la = matExpo(mat,x-1, n);
+        vi res = mulBase(la, base, n);
+        Sl = res[3];
+    }
+    if(y != 0){
+        mat = matExpo(mat,y, n);
+        vi res = mulBase(mat,base, n);
+        Sr = res[3];
+    }
+    cout << (Sr - Sl + mod) % mod << endl;
 }
