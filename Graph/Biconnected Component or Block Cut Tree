@@ -1,0 +1,17 @@
+//bcc[i] is which num Biconnected element it
+vector<int> g[N], bcc[N], st;
+void dfs(int u, int pre = 0) {
+  low[u] = dis[u] = ++T;st.push_back(u);
+  for(auto v: g[u]) {
+    if(!dis[v]) {dfs(v, u);
+      low[u] = min(low[u], low[v]);
+      if(low[v] >= dis[u]) {
+        sz ++;int x;
+        do {
+          x = st.back();st.pop_back();
+          bcc[x].push_back(sz);
+        } while(x ^ v);
+        bcc[u].push_back(sz);
+      }
+    } else if(v != pre) low[u] = min(low[u], dis[v]);
+ }}//if bcc[u].size() > 1 it is an AP
