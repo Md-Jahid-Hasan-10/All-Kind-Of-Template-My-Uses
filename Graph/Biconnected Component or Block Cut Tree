@@ -1,5 +1,5 @@
 //bcc[i] is which num Biconnected element it
-vector<int> g[N], bcc[N], st;
+vi g[N],bcc[N],st;int low[N],dis[N],T,sz;
 void dfs(int u, int pre = 0) {
   low[u] = dis[u] = ++T;st.push_back(u);
   for(auto v: g[u]) {
