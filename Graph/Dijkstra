@@ -3,28 +3,20 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-
 #define int long long
 #define endl '\n'
 #define pb push_back
 #define pob pop_back
-#define make M
 #define F first
 #define S second
 #define all(s) (s).begin(), (s).end()
 #define rall(s) s.rbegin(), s.rend()
 #define sz(x) (int)x.size()
 #define mem(a, b) memset(a, b, sizeof(a))
-#define log2(x) 31 - __builtin_clz(x)
-#define getbit(n,i) (((n) & (1LL << (i))) !=0 )
-#define TxtIO   freopen("sample.in","r",stdin); freopen("sample.out","w",stdout);
 #define Taratari_kaj_kor                 \
     ios_base::sync_with_stdio(0); \
     cin.tie(0);                   \
     cout.tie(0);
-#define py cout << "YES" << endl
-#define pn cout << "NO" << endl
-#define PI acos(-1)
 
 typedef long long ll;
 typedef vector<int> vi;
@@ -32,53 +24,41 @@ typedef vector<ll> vl;
 typedef vector<vi> vvi;
 typedef vector<vl> vvl;
 typedef pair<int,int> pii;
-typedef pair<double, double> pdd;
-typedef pair<ll, ll> pll;
 typedef vector<pii> vii;
-typedef vector<pll> vll;
-typedef double dl;
-
-vector<pair<int,int>>movement = {
-    {1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}
-};
-
 const ll INF = 1e18;
 const ll Mod = 1e9+7;
-const ll N = 2e5+12;
-
-int distence[N];
+const ll N = 1e5+12;
+int dist[N];
+int par[N];
 vii graph[N];
 
-void dijkstra(int s, int n)
+void dijkstra(int s,int n)
 {
-    for(int i = 0; i < n; i++){
-        distance[i] = INF;
+    for(int i = 1; i <= n; i++){
+        dist[i] = INF;
+        par[i] = -1;
     }
-    distance[s] = 0;
+    dist[1] = 0;
     priority_queue<pii,vii,greater<pii>> pq;
     pq.push({0,s});
-
     while(!pq.empty()){
         int cur_node = pq.top().S;
-        int cur_dist = pq.top().F;
+        int cur_dis = pq.top().F;
         pq.pop();
-        if(cur_dist > distance[cur_node])continue;
-        for(auto child_node : graph[cur_node]){
-            int cost = child_node.S;
-            int node = child_node.F;
-            if(cost + cur_dist < distance[node]){
-                distance[node] = cost + cur_dist;
-                pq.push({distance[node],node});
+        if(cur_dis > dist[cur_node])continue;
+        for(auto child : graph[cur_node]){
+            int child_node = child.F;
+            int child_dis = child.S;
+            if(cur_dis + child_dis < dist[child_node]){
+                dist[child_node] = cur_dis + child_dis;
+                par[child_node] = cur_node;
+                pq.push({dist[child_node],child_node});
             }
         }
     }
-
 }
-signed main()
+void solve()
 {
-
-    Taratari_kaj_kor
-
     int n,m;
     cin >> n >> m;
     for(int i = 0; i < m; i++){
@@ -87,5 +67,33 @@ signed main()
         graph[u].push_back({v,w});
         graph[v].push_back({u,w});
     }
+    dijkstra(1,n);
+    if(par[n] == -1){
+        cout << -1 << endl;
+        return;
+    }
+    vi parent;
+    int papa = n;
+    parent.push_back(papa);
+    while(par[papa] != -1){
+        int la = par[papa];
+        parent.push_back(la);
+        papa = la;
+    }
+    reverse(all(parent));
+    for(auto u : parent){
+        if(u == -1)continue;
+        cout << u <<" ";
+    }
+    cout << endl;
+}
 
+signed main()
+{
+
+    Taratari_kaj_kor
+    int _=1 , h = 0;
+    while( _-- ){
+        solve();
+    }
 }
