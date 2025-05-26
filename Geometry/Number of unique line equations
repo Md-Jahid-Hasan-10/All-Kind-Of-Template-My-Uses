@@ -1,0 +1,65 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int gcd3(int a, int b, int c) {
+    return __gcd(__gcd(a, b), c);
+}
+tuple<int, int, int> normalizeLineEquation(int a, int b, int c) {
+    // Compute GCD of all coefficients
+    int common_divisor = gcd3(a, b, c);
+    // If all coefficients are zero (shouldn't happen for valid lines)
+    if (common_divisor == 0) {
+        return make_tuple(0, 0, 0);
+    }
+    // Divide all coefficients by GCD
+    a /= common_divisor;
+    b /= common_divisor;
+    c /= common_divisor;
+    // Find the first non-zero coefficient
+    int first_non_zero = 0;
+    if (a != 0) first_non_zero = a;
+    else if (b != 0) first_non_zero = b;
+    else if (c != 0) first_non_zero = c;
+    // Ensure the first non-zero coefficient is positive
+    if (first_non_zero < 0) {
+        a = -a;
+        b = -b;
+        c = -c;
+    }
+    return make_tuple(a, b, c);
+}
+
+int countUniqueLines(const vector<pair<int, int>>& points) {
+    set<tuple<int, int, int>> unique_lines;
+    int n = points.size();
+    for (int i = 0; i < n; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            int x1 = points[i].first, y1 = points[i].second;
+            int x2 = points[j].first, y2 = points[j].second;
+            // Calculate line equation: a*x + b*y + c = 0
+            int a = y2 - y1;
+            int b = x1 - x2;
+            int c = x2 * y1 - x1 * y2;
+            // Normalize the equation
+            auto normalized = normalizeLineEquation(a, b, c);
+            // Add to set of unique lines
+            unique_lines.insert(normalized);
+        }
+    }
+    return unique_lines.size();
+}
+
+int main() {
+    int n;
+    cout << "Enter number of points (up to 1000): ";
+    cin >> n;
+    vector<pair<int, int>> points(n);
+    cout << "Enter " << n << " points (x y):" << endl;
+    for (int i = 0; i < n; ++i) {
+        cin >> points[i].first >> points[i].second;
+    }
+    int unique_count = countUniqueLines(points);
+    cout << "Number of unique line equations: " << unique_count << endl;
+    
+    return 0;
+}
