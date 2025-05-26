@@ -1,7 +1,21 @@
 //! In The Name Of Allah
 
-#include <bits/stdc++.h>
+/*********************************************************************\
+*!          |       *        |       | ___  | @                       |
+*!          |      * *       |       |  |   |  @                      |
+*!          |     *   *      |       |  |   |   @                     |
+*!          |    *******     |-------|  |   |    @                    |
+*! |*       |   *       *    |       |  |   |   @                     |
+*! |        |  *         *   |       |  |   |  @                      |
+*! |________| *           *  |       | ___  | @                       |
+*!                                                                    |
+*!  codeforces = Jahid__Noob                                          |
+*!  mail =  2227Jahid@gmail.com                                       |
+*!  IIT,Jahangirnagar University(41)                                  |
+*!                                                                    |
+**********************************************************************/
 
+#include <bits/stdc++.h>
 using namespace std;
 
 #define int long long
@@ -15,8 +29,9 @@ using namespace std;
 #define rall(s) s.rbegin(), s.rend()
 #define sz(x) (int)x.size()
 #define mem(a, b) memset(a, b, sizeof(a))
-#define log2(x) 31 - __builtin_clz(x)
+#define cnt_bit(x) __builtin_popcountll(x)
 #define getbit(n, i) (((n) & (1LL << (i))) != 0)
+#define msb(x) 31 - __builtin_clz(x)
 #define TxtIO                         \
     freopen("sample.in", "r", stdin); \
     freopen("sample.out", "w", stdout);
@@ -27,94 +42,105 @@ using namespace std;
 #define py cout << "YES" << endl
 #define pn cout << "NO" << endl
 #define PI acos(-1)
+#define sum_of(A) accumulate(all(A), 0ll)
+#define max_of(A) *max_element(all(A))
+#define min_of(A) *min_element(all(A))
 
 typedef long long ll;
+typedef double dl;
 typedef vector<int> vi;
 typedef vector<vi> vvi;
 typedef pair<int, int> pii;
 typedef vector<pii> vii;
-typedef double dl;
+typedef array<int,3> tu;
 
-const ll Goriber_INF = 1e18;
-const ll Mod = 1e9 + 7;
-const ll N = 2e5 + 12;
+//#define DEBUG
+#define TEM template <class... T>
+TEM istream& operator>>(istream& in, pair<T...>& p) { return in >> p.first >> p.second; }
+TEM ostream& operator<<(ostream& out, const pair<T...>& p) { return out << '(' << p.first << ", " << p.second << ')'; }
+#define def_in(cont) TEM istream& operator>>(istream& in, cont<T...>& A) { for (auto& a : A) in >> a; return in; }
+#define def_out(cont) TEM ostream& operator<<(ostream& out, const cont<T...>& A) { int i = 0; auto it = A.begin(); while (it != A.end()) out << &" "[!i++] << *it++; return out; }
+def_in(vector) def_in(deque) def_out(vector) def_out(deque) def_out(set) def_out(map) def_out(multiset)
 
-struct edge{
-    int u,v,w;
+TEM void c_in(T&... args) { ((cin >> args), ...); }
+TEM void c_out(const T&... args) { int i = 0; ((cout << &" "[!i++] << args), ...) << '\n'; }
+void c_out(bool b) { c_out(b ? "YES" : "NO"); }
+
+#ifdef DEBUG
+TEM void c_err(const T&... args) { int i = 0; ((cerr << &" "[!i++] << args), ...) << '\n'; }
+#else
+#define c_err(...)
+#endif
+#define dbg(args...) c_err(#args, '=', args)
+
+ll gcd(ll a, ll b) { return __gcd(a, b); }
+ll lcm(ll a, ll b) { return a * (b / gcd(a, b)); }
+
+/*
+int p = 237,mod = 1000000289;
+auto Goriber_function = [&] (int m) -> int{
+
+};
+*/
+const ll oo = 1e18;
+const ll mod = 1e9 + 7;
+const ll N = 2e5 + 123;
+struct edge {
+	int u,v,w,x;
 };
 vector<edge> e;
-int n,m,dist[N],par[N];
+int dist[N],par[N],neg[N];
+void BellmenFord(int s,int n,int m) {
+	for(int i = 0; i <= n; i++) {
+		dist[i] = oo,neg[i] = 0;
+	}
+	dist[s] = 0;
+	for(int i = 1; i <= n; i++) {
+		for(int j = 0; j < m; j++) {
+			int u = e[j].u,v = e[j].v,w = e[j].w;
+			if(dist[u] + w < dist[v]) {
+				dist[v] = dist[u] + w;
+				par[v] = u;
+				if(i == n) {
+					neg[v] = 1;
+				}
+			}
+		}
+	}
+}// neg[i] tells it is a part of negative cycle or not
 
-vi BellmenFord(int s)
-{
-    vi path;
-    for(int i = 1; i <= n; i++){
-        dist[i] = Mod;
-    }
-    dist[s] = 0;
-    int x = -1;
-    for(int i = 1; i <= n; i++){
-        x = -1;
-        for(int j = 0; j < m; j++){
-            int u = e[j].u;
-            int v = e[j].v;
-            int w = e[j].w;
-            if(dist[u] + w < dist[v]){
-                dist[v] = dist[u] + w;
-                par[v] = u;
-                x = v;
-            }
-        }
-    }
-    if(x == -1)return path;
-    for(int i = 1; i <= n; i++){
-        x = par[x];
-    }
-    int y = x;
-    while(y != x || sz(path) == 0){
-        path.push_back(y);
-        y = par[y];
-    }
-    path.push_back(x);
-    reverse(all(path));
-    return path;
-}
 void Goriber_solve()
 {
-    cin >> n >> m;
-    for(int i = 1; i <= m; i++){
-        int u,v,w;
-        cin >> u >> v >> w;
-        e.push_back({u,v,w});
+    int n,m,p;
+    cin >> n >> m >> p;
+    for(int i = 0; i <= n; i++){
+        neg[i] = 0;
     }
-    vi ans = BellmenFord(1);
-    if(sz(ans) == 0){
-        cout << "No Cycle" << endl;
+    e.clear();
+    e.resize(m);
+    map<pii,int> bd;
+    for(int i = 0; i < m; i++){
+        int x,y;
+        cin >> e[i].u >> e[i].v >> x >> y;
+        e[i].w = p * y - x;
     }
-    else{
-        cout << "Cycle " << endl;
-        for(auto u : ans)cout << u <<" ";
-        cout << endl;
+    BellmenFord(0,n,m);
+    for(int i = 0; i < n; i++){
+        if(neg[i]){
+            py;
+            return;
+        }
     }
+    pn;
 }
 signed main()
 {
-
     Fokinnir_moto_kaj_koris_na
-    int _ = 1,
-    h = 0;
-    //cin >> _;
+    int _ = 1,tc = 0;
+    cin >> _;
     while (_--)
     {
-        // cout<<"Case "<<++h<<": ";
+        cout<<"Case "<<++tc<<": ";
         Goriber_solve();
     }
 }
-/*
-4 5
-1 2 1
-2 4 1
-3 1 1
-4 1 -3
-4 3 -2
-*/
