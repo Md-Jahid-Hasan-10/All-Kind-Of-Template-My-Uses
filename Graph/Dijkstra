@@ -1,99 +1,146 @@
-/// In The Name Of Allah
+//! In The Name Of Allah
+
+/*********************************************************************\
+*!          |       *        |       | ___  | @                       |
+*!          |      * *       |       |  |   |  @                      |
+*!          |     *   *      |       |  |   |   @                     |
+*!          |    *******     |-------|  |   |    @                    |
+*! |*       |   *       *    |       |  |   |   @                     |
+*! |        |  *         *   |       |  |   |  @                      |
+*! |________| *           *  |       | ___  | @                       |
+*!                                                                    |
+*!  codeforces = Jahid__Noob                                          |
+*!  mail =  2227Jahid@gmail.com                                       |
+*!  IIT,Jahangirnagar University(41)                                  |
+*!                                                                    |
+**********************************************************************/
 
 #include <bits/stdc++.h>
-
 using namespace std;
+
 #define int long long
 #define endl '\n'
 #define pb push_back
 #define pob pop_back
+#define make M
 #define F first
 #define S second
 #define all(s) (s).begin(), (s).end()
 #define rall(s) s.rbegin(), s.rend()
 #define sz(x) (int)x.size()
 #define mem(a, b) memset(a, b, sizeof(a))
-#define Taratari_kaj_kor                 \
-    ios_base::sync_with_stdio(0); \
-    cin.tie(0);                   \
+#define cnt_bit(x) __builtin_popcountll(x)
+#define getbit(n, i) (((n) & (1LL << (i))) != 0)
+#define msb(x) 31 - __builtin_clz(x)
+#define TxtIO                         \
+    freopen("sample.in", "r", stdin); \
+    freopen("sample.out", "w", stdout);
+#define Fokinnir_moto_kaj_koris_na \
+    ios_base::sync_with_stdio(0);  \
+    cin.tie(0);                    \
     cout.tie(0);
+#define py cout << "YES" << endl
+#define pn cout << "NO" << endl
+#define PI acos(-1)
+#define sum_of(A) accumulate(all(A), 0ll)
+#define max_of(A) *max_element(all(A))
+#define min_of(A) *min_element(all(A))
 
 typedef long long ll;
+typedef double dl;
 typedef vector<int> vi;
-typedef vector<ll> vl;
 typedef vector<vi> vvi;
-typedef vector<vl> vvl;
-typedef pair<int,int> pii;
+typedef pair<int, int> pii;
 typedef vector<pii> vii;
-const ll INF = 1e18;
-const ll Mod = 1e9+7;
-const ll N = 1e5+12;
-int dist[N];
-int par[N];
-vii graph[N];
+typedef array<int,3> tu;
 
-void dijkstra(int s,int n)
-{
+//#define DEBUG
+#define TEM template <class... T>
+TEM istream& operator>>(istream& in, pair<T...>& p) { return in >> p.first >> p.second; }
+TEM ostream& operator<<(ostream& out, const pair<T...>& p) { return out << '(' << p.first << ", " << p.second << ')'; }
+#define def_in(cont) TEM istream& operator>>(istream& in, cont<T...>& A) { for (auto& a : A) in >> a; return in; }
+#define def_out(cont) TEM ostream& operator<<(ostream& out, const cont<T...>& A) { int i = 0; auto it = A.begin(); while (it != A.end()) out << &" "[!i++] << *it++; return out; }
+def_in(vector) def_in(deque) def_out(vector) def_out(deque) def_out(set) def_out(map) def_out(multiset)
+
+TEM void c_in(T&... args) { ((cin >> args), ...); }
+TEM void c_out(const T&... args) { int i = 0; ((cout << &" "[!i++] << args), ...) << '\n'; }
+void c_out(bool b) { c_out(b ? "YES" : "NO"); }
+
+#ifdef DEBUG
+TEM void c_err(const T&... args) { int i = 0; ((cerr << &" "[!i++] << args), ...) << '\n'; }
+#else
+#define c_err(...)
+#endif
+#define dbg(args...) c_err(#args, '=', args)
+
+ll gcd(ll a, ll b) { return __gcd(a, b); }
+ll lcm(ll a, ll b) { return a * (b / gcd(a, b)); }
+
+/*
+int p = 237,mod = 1000000289;
+auto Goriber_function = [&] (int m) -> int{
+
+};
+*/
+const ll oo = 1e18;
+const ll mod = 1e9 + 7;
+const ll N = 2e5 + 123;
+void dijkstra(int s,int n,vi &dis,vector<vector<pii>> &graph){
+    priority_queue<pii> q;
     for(int i = 1; i <= n; i++){
-        dist[i] = INF;
-        par[i] = -1;
+        dis[i]=oo;
     }
-    dist[1] = 0;
-    priority_queue<pii,vii,greater<pii>> pq;
-    pq.push({0,s});
-    while(!pq.empty()){
-        int cur_node = pq.top().S;
-        int cur_dis = pq.top().F;
-        pq.pop();
-        if(cur_dis > dist[cur_node])continue;
-        for(auto child : graph[cur_node]){
-            int child_node = child.F;
-            int child_dis = child.S;
-            if(cur_dis + child_dis < dist[child_node]){
-                dist[child_node] = cur_dis + child_dis;
-                par[child_node] = cur_node;
-                pq.push({dist[child_node],child_node});
+    dis[s]=0;
+    q.push({0,s});
+    while(!q.empty()){
+        int a = q.top().S; 
+        int co = -q.top().F;
+        q.pop();
+        if(dis[a] < co)continue;
+        for (auto u: graph[a]){
+            int b = u.F,w = u.S;
+            if (dis[a]+w < dis[b]){
+                dis[b] = dis[a]+w;
+                q.push({-dis[b],b});
             }
         }
     }
 }
-void solve()
+
+void Goriber_solve()
 {
-    int n,m;
-    cin >> n >> m;
-    for(int i = 0; i < m; i++){
+    int n,m,s,t,p;
+    cin >> n >> m >> s >> t >> p;
+    vi dis1(n+1),dis2(n+1);
+    vector<vector<pii>> graph1(n+1),graph2(n+1);
+    vector<tu> edges;
+    for(int i = 1; i <= m; i++){
         int u,v,w;
         cin >> u >> v >> w;
-        graph[u].push_back({v,w});
-        graph[v].push_back({u,w});
+        graph1[u].pb({v,w});
+        graph2[v].pb({u,w});
+        edges.pb({u,v,w});
     }
-    dijkstra(1,n);
-    if(par[n] == -1){
-        cout << -1 << endl;
-        return;
+    dijkstra(s,n,dis1,graph1);
+    dijkstra(t,n,dis2,graph2);
+    int ans = -1;
+    for(int i = 0; i < m; i++){
+        int u = edges[i][0],v = edges[i][1],w = edges[i][2];
+        int tot = dis1[u] + dis2[v] + w;
+        if(tot <= p){
+            ans = max(ans,w);
+        }
     }
-    vi parent;
-    int papa = n;
-    parent.push_back(papa);
-    while(par[papa] != -1){
-        int la = par[papa];
-        parent.push_back(la);
-        papa = la;
-    }
-    reverse(all(parent));
-    for(auto u : parent){
-        if(u == -1)continue;
-        cout << u <<" ";
-    }
-    cout << endl;
+    cout << ans << endl;
 }
-
 signed main()
 {
-
-    Taratari_kaj_kor
-    int _=1 , h = 0;
-    while( _-- ){
-        solve();
+    Fokinnir_moto_kaj_koris_na
+    int _ = 1,tc = 0;
+    cin >> _;
+    while (_--)
+    {
+        cout<<"Case "<<++tc<<": ";
+        Goriber_solve();
     }
 }
