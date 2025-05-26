@@ -86,22 +86,21 @@ const ll oo = 1e18;
 const ll mod = 1e9 + 7;
 const ll N = 2e5 + 123;
 void dijkstra(int s,int n,vi &dis,vector<vector<pii>> &graph){
-    priority_queue<pii> q;
+    priority_queue<pii,vector<pii>,greater<pii>> pq;
     for(int i = 1; i <= n; i++){
         dis[i]=oo;
     }
     dis[s]=0;
-    q.push({0,s});
-    while(!q.empty()){
-        int a = q.top().S; 
-        int co = -q.top().F;
-        q.pop();
-        if(dis[a] < co)continue;
+    pq.push({0,s});
+    while(!pq.empty()){
+        int a = pq.top().S,co = pq.top().F;
+        pq.pop();
+        if(co > dis[a]) continue;
         for (auto u: graph[a]){
             int b = u.F,w = u.S;
             if (dis[a]+w < dis[b]){
                 dis[b] = dis[a]+w;
-                q.push({-dis[b],b});
+                pq.push({dis[b],b});
             }
         }
     }
