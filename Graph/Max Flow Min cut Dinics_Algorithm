@@ -156,6 +156,13 @@ struct Dinic {
 		}
 		return flow;
 	}
+	void reset_flows() {
+		for (int i = 0; i < n; ++i) {
+			for (auto& e : g[i]) {
+				e.flow = 0;
+			}
+		}
+	}
 };
 void Goriber_solve()
 {
