@@ -162,12 +162,42 @@ void Goriber_solve()
     int n,m;
     cin >> n >> m;
     Dinic d(n+1);
+    vii edges;
     for(int i = 1; i <= m; i++){
         int u,v,w;
-        cin >> u >> v >> w;
-        d.add_edge(u,v,w,i);
+        cin >> u >> v;
+        d.add_edge(u,v,1,i);
+        d.add_edge(v,u,1,i+m);
+        edges.pb({u,v});
     }
+    // min_cut = maxFlow
     cout << d.max_flow(1,n) << endl;
+    vector<bool> vis(n+1,false);
+    queue<int> q;
+    q.push(1);vis[1] = true;
+    while(!q.empty()){
+        int u = q.front();q.pop();
+        for(auto e : d.g[u]){
+            if(!vis[e.to] && e.flow < e.w){
+                vis[e.to] = true;
+                q.push(e.to);
+            }
+        }
+    }
+    for(int i = 1; i <= m; i++){
+        edges.pb({edges[i-1].S,edges[i-1].F});
+    }
+    vii ans;
+    for(int i = 1; i <= n; i++){
+        if(vis[i]){
+            for(auto e : d.g[i]){
+                if(e.id >= 1 && !vis[e.to]){
+                    ans.pb({edges[e.id-1].F,edges[e.id-1].S});
+                }
+            }
+        }
+    }
+    for(auto e : ans)cout << e.F << " " << e.S << endl;
 }
 signed main()
 {
