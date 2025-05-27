@@ -171,7 +171,9 @@ void Goriber_solve()
         edges.pb({u,v});
     }
     // min_cut = maxFlow
-    cout << d.max_flow(1,n) << endl;
+    int mx = d.max_flow(1,n);
+    cout << mx << endl;
+    // now cur min edge where flow is 0
     vector<bool> vis(n+1,false);
     queue<int> q;
     q.push(1);vis[1] = true;
@@ -198,6 +200,29 @@ void Goriber_solve()
         }
     }
     for(auto e : ans)cout << e.F << " " << e.S << endl;
+    // now find path where flow is occured
+    vector<vi> paths;
+    for(int i = 0; i < mx; i++){
+        vi path;
+        int cur = 1;
+        path.pb(1);
+        while(cur != n){
+            for(auto &e : d.g[cur]){
+                if(e.flow > 0 && e.w == 1){
+                    e.flow = 0;
+                    cur = e.to;
+                    path.pb(cur);
+                    break;
+                }
+            }
+        }
+        paths.pb(path);
+    }
+    for(auto path : paths){
+        cout << sz(path) << endl;
+        for(auto x : path)cout << x << " ";
+        cout << endl;
+    }
 }
 signed main()
 {
