@@ -143,8 +143,8 @@ struct HopcroftKarp {
 		}
 		return ans;
 	}
-    vii get_pairs(){
-        vii pairs;
+    vector<pii> get_pairs(){
+        vector<pii> pairs;
         for(int u = 1; u <= n; u++) {
             if (l[u]) {
                 pairs.emplace_back(u,l[u] - n);
