@@ -163,6 +163,8 @@ void Goriber_solve()
         cin >> u >> v;
         h.add_edge(u,v);
     }
+   // vertex cover = maximum matching
+   // edges cover = (n + m) - maximum matching
     cout << h.maximum_matching() << endl;
     vector<pii> ans = h.get_pairs();
     for(auto p : ans){
