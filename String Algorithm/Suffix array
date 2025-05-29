@@ -1,0 +1,59 @@
+// Suffix Array + LCP (O(n log n))
+const int MAXN = 1 << 16;
+int n, stp, mv, sa[MAXN], tmp[MAXN], sum[MAXN], cnt[MAXN], rank[17][MAXN];
+char str[MAXN];
+
+bool equal(int u, int v) {
+    if (!stp) return str[u] == str[v];
+    int a = rank[stp - 1][u], b = rank[stp - 1][v];
+    if (a != b) return false;
+    a = (u + mv < n) ? rank[stp - 1][u + mv] : -1;
+    b = (v + mv < n) ? rank[stp - 1][v + mv] : -1;
+    return a == b;
+}
+
+void update() {
+    int rnk = 0;
+    for (int i = 0; i < n; ++i) sum[i] = 0;
+    for (int i = 0; i < n; ++i) {
+        sa[i] = tmp[i];
+        if (i && !equal(sa[i], sa[i - 1])) rank[stp][sa[i]] = ++rnk;
+        else rank[stp][sa[i]] = rnk;
+        sum[rank[stp][sa[i]] + 1]++;
+    }
+    for (int i = 1; i < n; ++i) sum[i] += sum[i - 1];
+}
+
+void Sort() {
+    memset(cnt, 0, sizeof cnt);
+    memset(tmp, -1, sizeof tmp);
+    for (int i = 0; i < mv; ++i) {
+        int idx = rank[stp - 1][n - i - 1];
+        tmp[sum[idx] + cnt[idx]++] = n - i - 1;
+    }
+    for (int i = 0; i < n; ++i) {
+        int idx = sa[i] - mv;
+        if (idx < 0) continue;
+        int r = rank[stp - 1][idx];
+        tmp[sum[r] + cnt[r]++] = idx;
+    }
+    update();
+}
+
+void buildSuffixArray() {
+    for (int i = 0; i < n; ++i) tmp[i] = i;
+    sort(tmp, tmp + n, [](int a, int b) { return str[a] < str[b]; });
+    stp = 0; update(); ++stp;
+    for (mv = 1; mv < n; mv <<= 1, ++stp) Sort();
+    --stp;
+    for (int i = 0; i <= stp; ++i) rank[i][n] = -1;
+}
+
+int lcp(int u, int v) {
+    int ret = 0;
+    if (u == v) return n - u;
+    for (int i = stp; i >= 0 && u < n && v < n; --i)
+        if (rank[i][u] == rank[i][v]) u += 1 << i, v += 1 << i, ret += 1 << i;
+    return ret;
+}
+// Use buildSuffixArray() to construct suffix array and lcp(u, v) for LCP query.
