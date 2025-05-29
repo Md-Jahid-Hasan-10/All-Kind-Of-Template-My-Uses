@@ -1,14 +1,18 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-#include <bits/stdc++.h>
-using namespace std;
+#define pii pair<int,int>
 
 struct AhoCorasick {
     static const int A = 26;
-    struct T { int nxt[A], link = 0; vector<int> out; T() { fill(nxt, nxt + A, 0); } };
+    struct T {
+        int nxt[A], link = 0;
+        vector<int> out;
+        T() { fill(nxt, nxt + A, 0); }
+    };
     vector<T> t = {T()};
-    void insert(string &s, int id) {
+    vector<string> patterns;
+    void insert(const string &s, int id) {
         int u = 0;
         for (char c : s) {
             int x = c - 'a';
@@ -17,6 +21,7 @@ struct AhoCorasick {
         }
         t[u].out.push_back(id);
     }
+
     void build() {
         queue<int> q;
         for (int c = 0; c < A; ++c)
@@ -28,19 +33,21 @@ struct AhoCorasick {
                 if (!v) v = t[p].nxt[c];
                 else t[v].link = t[p].nxt[c], q.push(v);
             }
-            for (int x : t[t[u].link].out) t[u].out.push_back(x);
+            for(int x : t[t[u].link].out) t[u].out.push_back(x);
         }
     }
-    vector<int> search(string &s, int n) {
-        vector<int> res(n);
-        for (int u = 0, i = 0; i < s.size(); ++i) {
-            u = t[u].nxt[s[i] - 'a'];
-            for (int id : t[u].out) res[id]++;
+    vector<pii> search(const string &s) {
+        vector<pii> matches;
+        int u = 0;
+        for (int i = 0; i < s.size(); ++i) {
+            int x = s[i] - 'a';
+            u = t[u].nxt[x];
+            for (int id : t[u].out)
+                matches.emplace_back(id, i);
         }
-        return res;
+        return matches;
     }
 };
-
 int main() {
     AhoCorasick ac;
     vector<string> patterns = {"he", "she", "his", "her"};
@@ -48,7 +55,8 @@ int main() {
         ac.insert(patterns[i], i);
     ac.build();
     string text = "sherlok";
-    vector<int> counts = ac.search(text, patterns.size());
-    for (int i = 0; i < patterns.size(); ++i)
-        cout << patterns[i] << ": " << counts[i] << " times\n";
+    auto counts = ac.search(text);
+    for(auto p : counts){
+        cout << patterns[p.first] << " ends at position " << p.second << endl;
+    }
 }
