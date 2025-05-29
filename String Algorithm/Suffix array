@@ -1,56 +1,41 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// ----------------- Suffix Array Build -----------------
-vector<int> build_suffix_array(const string &s) {
-    int n = (int)s.size();
-    vector<int> p(n), c(n);
-    {
-        // k=0 sorting by first character
-        vector<pair<char,int>> a(n);
-        for(int i=0; i<n; i++) a[i] = {s[i], i};
-        sort(a.begin(), a.end());
-        for(int i=0; i<n; i++) p[i] = a[i].second;
-        c[p[0]] = 0;
-        for(int i=1; i<n; i++)
-            c[p[i]] = c[p[i-1]] + (a[i].first != a[i-1].first);
-    }
-
-    int k = 0;
-    while ((1 << k) < n) {
-        vector<int> pn(n), cn(n);
-        for (int i=0; i<n; i++)
-            pn[i] = (p[i] - (1 << k) + n) % n;
-
-        // Counting sort by c[]
+vector<int> build_sa(const string &s) {
+    int n = (int)s.size(), k = 0;
+    vi p(n), c(n), pn(n), cn(n);
+    vector<pair<char,int>> a(n);
+    for(int i=0;i<n;i++) a[i] = {s[i], i};
+    sort(a.begin(), a.end());
+    for(int i=0;i<n;i++) p[i] = a[i].second;
+    c[p[0]] = 0;
+    for(int i=1;i<n;i++) c[p[i]] = c[p[i-1]] + (a[i].first != a[i-1].first);
+    while((1 << k) < n) {
+        for(int i=0;i<n;i++) pn[i] = (p[i] - (1 << k) + n) % n;
         vector<int> cnt(n,0), pos(n);
-        for (auto x : c) cnt[x]++;
+        for(int x : c) cnt[x]++;
         pos[0] = 0;
-        for(int i=1; i<n; i++) pos[i] = pos[i-1] + cnt[i-1];
-        for(auto x : pn) p[pos[c[x]]++] = x;
-
+        for(int i=1;i<n;i++) pos[i] = pos[i-1] + cnt[i-1];
+        for(int x : pn) p[pos[c[x]]++] = x;
         cn[p[0]] = 0;
-        for(int i=1; i<n; i++) {
+        for(int i=1;i<n;i++) {
             pair<int,int> prev = {c[p[i-1]], c[(p[i-1] + (1 << k)) % n]};
-            pair<int,int> now  = {c[p[i]],   c[(p[i]   + (1 << k)) % n]};
+            pair<int,int> now  = {c[p[i]], c[(p[i] + (1 << k)) % n]};
             cn[p[i]] = cn[p[i-1]] + (now != prev);
         }
-        c = cn;
-        k++;
+        c = cn; k++;
     }
     return p;
 }
 
-// ----------------- LCP Array Build (Kasai) -----------------
-vector<int> build_lcp_array(const string &s, const vector<int> &sa) {
-    int n = (int)s.size();
-    vector<int> rank(n,0), lcp(n-1,0);
-    for(int i=0; i<n; i++) rank[sa[i]] = i;
-    int k=0;
-    for(int i=0; i<n; i++) {
+vi build_lcp(const string &s, const vi &sa) {
+    int n = (int)s.size(), k = 0;
+    vi rank(n), lcp(n-1);
+    for(int i=0;i<n;i++) rank[sa[i]] = i;
+    for(int i=0;i<n;i++) {
         if(rank[i] == n-1) { k=0; continue; }
         int j = sa[rank[i]+1];
-        while(i+k<n && j+k<n && s[i+k] == s[j+k]) k++;
+        while(i+k<n && j+k<n && s[i+k]==s[j+k]) k++;
         lcp[rank[i]] = k;
         if(k) k--;
     }
