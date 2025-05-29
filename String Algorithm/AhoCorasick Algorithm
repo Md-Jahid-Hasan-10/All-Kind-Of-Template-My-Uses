@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct AhoCorasick {
+    static const int A = 26;
+    struct T { int nxt[A], link = 0; vector<int> out; T() { fill(nxt, nxt + A, 0); } };
+    vector<T> t = {T()};
+    void insert(string &s, int id) {
+        int u = 0;
+        for (char c : s) {
+            int x = c - 'a';
+            if (!t[u].nxt[x]) t[u].nxt[x] = t.size(), t.emplace_back();
+            u = t[u].nxt[x];
+        }
+        t[u].out.push_back(id);
+    }
+    void build() {
+        queue<int> q;
+        for (int c = 0; c < A; ++c)
+            if (t[0].nxt[c]) q.push(t[0].nxt[c]);
+        while (!q.empty()) {
+            int u = q.front(), p = t[u].link; q.pop();
+            for (int c = 0; c < A; ++c) {
+                int &v = t[u].nxt[c];
+                if (!v) v = t[p].nxt[c];
+                else t[v].link = t[p].nxt[c], q.push(v);
+            }
+            for (int x : t[t[u].link].out) t[u].out.push_back(x);
+        }
+    }
+    vector<int> search(string &s, int n) {
+        vector<int> res(n);
+        for (int u = 0, i = 0; i < s.size(); ++i) {
+            u = t[u].nxt[s[i] - 'a'];
+            for (int id : t[u].out) res[id]++;
+        }
+        return res;
+    }
+};
+
+int main() {
+    AhoCorasick ac;
+    vector<string> patterns = {"he", "she", "his", "her"};
+    for (int i = 0; i < patterns.size(); ++i)
+        ac.insert(patterns[i], i);
+    ac.build();
+    string text = "sherlok";
+    vector<int> counts = ac.search(text, patterns.size());
+    for (int i = 0; i < patterns.size(); ++i)
+        cout << patterns[i] << ": " << counts[i] << " times\n";
+}
