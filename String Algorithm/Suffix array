@@ -1,59 +1,164 @@
-// Suffix Array + LCP (O(n log n))
-const int MAXN = 1 << 16;
-int n, stp, mv, sa[MAXN], tmp[MAXN], sum[MAXN], cnt[MAXN], rank[17][MAXN];
-char str[MAXN];
+#include <bits/stdc++.h>
+using namespace std;
 
-bool equal(int u, int v) {
-    if (!stp) return str[u] == str[v];
-    int a = rank[stp - 1][u], b = rank[stp - 1][v];
-    if (a != b) return false;
-    a = (u + mv < n) ? rank[stp - 1][u + mv] : -1;
-    b = (v + mv < n) ? rank[stp - 1][v + mv] : -1;
-    return a == b;
-}
-
-void update() {
-    int rnk = 0;
-    for (int i = 0; i < n; ++i) sum[i] = 0;
-    for (int i = 0; i < n; ++i) {
-        sa[i] = tmp[i];
-        if (i && !equal(sa[i], sa[i - 1])) rank[stp][sa[i]] = ++rnk;
-        else rank[stp][sa[i]] = rnk;
-        sum[rank[stp][sa[i]] + 1]++;
+// ----------------- Suffix Array Build -----------------
+vector<int> build_suffix_array(const string &s) {
+    int n = (int)s.size();
+    vector<int> p(n), c(n);
+    {
+        // k=0 sorting by first character
+        vector<pair<char,int>> a(n);
+        for(int i=0; i<n; i++) a[i] = {s[i], i};
+        sort(a.begin(), a.end());
+        for(int i=0; i<n; i++) p[i] = a[i].second;
+        c[p[0]] = 0;
+        for(int i=1; i<n; i++)
+            c[p[i]] = c[p[i-1]] + (a[i].first != a[i-1].first);
     }
-    for (int i = 1; i < n; ++i) sum[i] += sum[i - 1];
-}
 
-void Sort() {
-    memset(cnt, 0, sizeof cnt);
-    memset(tmp, -1, sizeof tmp);
-    for (int i = 0; i < mv; ++i) {
-        int idx = rank[stp - 1][n - i - 1];
-        tmp[sum[idx] + cnt[idx]++] = n - i - 1;
+    int k = 0;
+    while ((1 << k) < n) {
+        vector<int> pn(n), cn(n);
+        for (int i=0; i<n; i++)
+            pn[i] = (p[i] - (1 << k) + n) % n;
+
+        // Counting sort by c[]
+        vector<int> cnt(n,0), pos(n);
+        for (auto x : c) cnt[x]++;
+        pos[0] = 0;
+        for(int i=1; i<n; i++) pos[i] = pos[i-1] + cnt[i-1];
+        for(auto x : pn) p[pos[c[x]]++] = x;
+
+        cn[p[0]] = 0;
+        for(int i=1; i<n; i++) {
+            pair<int,int> prev = {c[p[i-1]], c[(p[i-1] + (1 << k)) % n]};
+            pair<int,int> now  = {c[p[i]],   c[(p[i]   + (1 << k)) % n]};
+            cn[p[i]] = cn[p[i-1]] + (now != prev);
+        }
+        c = cn;
+        k++;
     }
-    for (int i = 0; i < n; ++i) {
-        int idx = sa[i] - mv;
-        if (idx < 0) continue;
-        int r = rank[stp - 1][idx];
-        tmp[sum[r] + cnt[r]++] = idx;
+    return p;
+}
+
+// ----------------- LCP Array Build (Kasai) -----------------
+vector<int> build_lcp_array(const string &s, const vector<int> &sa) {
+    int n = (int)s.size();
+    vector<int> rank(n,0), lcp(n-1,0);
+    for(int i=0; i<n; i++) rank[sa[i]] = i;
+    int k=0;
+    for(int i=0; i<n; i++) {
+        if(rank[i] == n-1) { k=0; continue; }
+        int j = sa[rank[i]+1];
+        while(i+k<n && j+k<n && s[i+k] == s[j+k]) k++;
+        lcp[rank[i]] = k;
+        if(k) k--;
     }
-    update();
+    return lcp;
 }
 
-void buildSuffixArray() {
-    for (int i = 0; i < n; ++i) tmp[i] = i;
-    sort(tmp, tmp + n, [](int a, int b) { return str[a] < str[b]; });
-    stp = 0; update(); ++stp;
-    for (mv = 1; mv < n; mv <<= 1, ++stp) Sort();
-    --stp;
-    for (int i = 0; i <= stp; ++i) rank[i][n] = -1;
+// ----------------- 1. Smallest Cyclic Shift -----------------
+int smallest_cyclic_shift(const string &s) {
+    string t = s + s;
+    auto sa = build_suffix_array(t);
+    for(int i : sa)
+        if(i < (int)s.size()) return i;  // প্রথম সঠিক suffix যেটা সাইজের মধ্যে
+    return 0;
 }
 
-int lcp(int u, int v) {
-    int ret = 0;
-    if (u == v) return n - u;
-    for (int i = stp; i >= 0 && u < n && v < n; --i)
-        if (rank[i][u] == rank[i][v]) u += 1 << i, v += 1 << i, ret += 1 << i;
-    return ret;
+// ----------------- 2. Substring Search -----------------
+// Returns true if s is substring of t, using binary search on suffix array of t
+bool substring_search(const string &t, const vector<int> &sa, const string &s) {
+    int n = (int)t.size(), m = (int)s.size();
+    int l = 0, r = n-1;
+    while(l <= r) {
+        int mid = (l+r)/2;
+        string cur = t.substr(sa[mid], min(m, n - sa[mid]));
+        if(cur == s) return true;
+        else if(cur < s) l = mid + 1;
+        else r = mid - 1;
+    }
+    return false;
 }
-// Use buildSuffixArray() to construct suffix array and lcp(u, v) for LCP query.
+
+// ----------------- 3. Compare Two Substrings in O(1) -----------------
+// Requires LCP + RMQ (segment tree or sparse table) built on LCP
+struct LCP_RMQ {
+    int n; vector<int> st;
+    LCP_RMQ(const vector<int> &lcp) {
+        n = (int)lcp.size();
+        int sz = 1; while(sz < n) sz <<= 1;
+        st.assign(2*sz, INT_MAX);
+        for(int i=0; i<n; i++) st[sz+i] = lcp[i];
+        for(int i=sz-1; i>0; i--) st[i] = min(st[2*i], st[2*i+1]);
+    }
+    int query(int l, int r) {
+        int res = INT_MAX;
+        for(l+=n, r+=n; l<=r; l>>=1, r>>=1) {
+            if((l&1) == 1) res = min(res, st[l++]);
+            if((r&1) == 0) res = min(res, st[r--]);
+        }
+        return res;
+    }
+};
+// substrings [l1,r1], [l2,r2] এর তুলনা (0-based indexing)
+bool compare_substrings(int l1,int r1,int l2,int r2, const vector<int> &sa, const vector<int> &rank, LCP_RMQ &rmq) {
+    int len1 = r1-l1+1, len2 = r2-l2+1;
+    if(l1 == l2) return len1 <= len2; // same start, smaller length considered smaller
+    int left = rank[l1], right = rank[l2];
+    if(left > right) swap(left,right);
+    int lcp_len = rmq.query(left, right-1);
+    int min_len = min(len1,len2);
+    if(lcp_len >= min_len) return len1 <= len2;
+    else return sa[left] < sa[right];
+}
+
+// ----------------- 4. LCP of two suffixes -----------------
+// Already computed via LCP array + RMQ
+// lcp between suffixes starting at i and j = query on LCP array between ranks[i], ranks[j]
+
+int main() {
+    string s = "banana";
+    auto sa = build_suffix_array(s + "$");
+    auto lcp = build_lcp_array(s + "$", sa);
+
+    cout << "Suffix Array:\n";
+    for(int i : sa) cout << i << " ";
+    cout << "\nLCP Array:\n";
+    for(int i=0; i<(int)lcp.size(); i++) cout << lcp[i] << " ";
+    cout << "\n";
+
+    // Example usage:
+
+    // 1. Smallest cyclic shift of s
+    cout << "Smallest cyclic shift index: " << smallest_cyclic_shift(s) << "\n";
+
+    // 2. Substring search
+    string pattern = "nan";
+    bool found = substring_search(s + "$", sa, pattern);
+    cout << "Substring '" << pattern << "' found? " << (found ? "YES" : "NO") << "\n";
+
+    // 3. Compare two substrings (l1,r1) and (l2,r2)
+    vector<int> rank(sa.size());
+    for(int i=0; i<(int)sa.size(); i++) rank[sa[i]] = i;
+    LCP_RMQ rmq(lcp);
+    int l1=1, r1=3, l2=2, r2=4;
+    bool cmp_res = compare_substrings(l1,r1,l2,r2,sa,rank,rmq);
+    cout << "Substring s[" << l1 << "," << r1 << "] is "
+         << (cmp_res ? "<=" : ">") << " s[" << l2 << "," << r2 << "]\n";
+
+    // 4. LCP of suffixes starting at i and j
+    int i=1, j=3;
+    int lcp_ij = rmq.query(min(rank[i], rank[j]), max(rank[i], rank[j]) - 1);
+    cout << "LCP of suffixes starting at " << i << " and " << j << " is " << lcp_ij << "\n";
+
+    // 5. Number of distinct substrings
+    // total substrings = n*(n+1)/2, subtract sum of LCP array to remove duplicates
+    int n = (int)s.size();
+    long long total_substrings = 1LL * n * (n + 1) / 2;
+    long long sum_lcp = 0;
+    for(int x : lcp) sum_lcp += x;
+    cout << "Number of distinct substrings: " << (total_substrings - sum_lcp) << "\n";
+
+    return 0;
+}
