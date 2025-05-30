@@ -1,0 +1,1 @@
+Given a rooted tree with N nodes where each node has a value, find a pair of nodes (u, v) so that u is an ancestor of v and the bit-wise XOR of the values of u and v is the maximum among all such pairs. The tree is always rooted at node 1.
