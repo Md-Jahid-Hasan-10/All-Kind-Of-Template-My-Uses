@@ -1,15 +1,23 @@
-#include<bits/stdc++.h>
+//! In The Name Of Allah
+
+#include <bits/stdc++.h>
 using namespace std;
 
-
-const int N = 2e5 + 12;
+#define int long long
+#define Fokinnir_moto_kaj_koris_na \
+    ios_base::sync_with_stdio(0);  \
+    cin.tie(0);                    \
+    cout.tie(0);
+const int oo = 1e18;
+const ll mod = 1e9 + 7;
+const ll N = 2e5 + 123;
 int ar[N],tree[4*N],lazy[4*N];
 int combine(int x,int y){
-    return x + y;
+    return (x + y);
 }
 void build(int node,int l,int r)
 {
-    lazy[node] = 0;
+    lazy[node] = -1;
     if(l == r){
         tree[node] = ar[l];
         return;
@@ -20,17 +28,18 @@ void build(int node,int l,int r)
     tree[node] = combine(tree[node*2],tree[node*2 + 1]);
 }
 void propagate(int node,int l,int r){
+    if(lazy[node] == -1)return;
     if(l != r){
-        lazy[2*node] += lazy[node];
-        lazy[2*node+1] += lazy[node];
+        lazy[2*node] = lazy[node];
+        lazy[2*node+1] = lazy[node];
     }
-    tree[node] += (r - l + 1)*lazy[node];
-    lazy[node] = 0;
+    tree[node] = (r - l + 1) * lazy[node];
+    lazy[node] = -1;
 }
 int query(int node,int l,int r,int a,int b){
     propagate(node,l,r);
     if(l > b || r < a){
-        return 0;/// identical value return
+        return  0;/// identical value return
     }
     if(a <= l && r <= b){
         return tree[node];
@@ -44,7 +53,7 @@ void update(int node,int l,int r,int a,int b,int val){
     propagate(node,l,r);
     if(a > r || b < l)return;
     if(a <= l && r <= b){
-        lazy[node] += val;
+        lazy[node] = val;
         propagate(node,l,r);
         return;
     }
@@ -53,9 +62,36 @@ void update(int node,int l,int r,int a,int b,int val){
     update(node*2+1,mid+1,r,a,b,val);
     tree[node] = combine(tree[node*2],tree[node*2+1]);
 }
+void Goriber_solve()
+{
+    int n,q;
+    cin >> n >> q;
+    build(1,1,n);
+    while(q--){
+        int type;
+        cin >> type;
+        if(type == 1){
+            int l,r,val;
+            cin >> l >> r >> val;
+            l++;
+            update(1,1,n,l,r,val);
+        }
+        else{
+            int l,r;
+            cin >> l >> r;
+            l++;
+            cout << query(1,1,n,l,r) << endl;
+        }
+    }
+}
 signed main()
 {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-
+    Fokinnir_moto_kaj_koris_na
+    int _ = 1,tc = 0;
+    //cin >> _;
+    while (_--)
+    {
+        //cout<<"Case "<<++tc<<": ";
+        Goriber_solve();
+    }
 }
