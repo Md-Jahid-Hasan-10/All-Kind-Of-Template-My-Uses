@@ -1,5 +1,4 @@
 //! In The Name Of Allah
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -8,16 +7,16 @@ using namespace std;
     ios_base::sync_with_stdio(0);  \
     cin.tie(0);                    \
     cout.tie(0);
+
 const int oo = 1e18;
-const ll mod = 1e9 + 7;
-const ll N = 2e5 + 123;
+const int N = 2e5 + 123;
 int ar[N],tree[4*N],lazy[4*N];
 int combine(int x,int y){
-    return (x + y);
+    return min(x , y);//! change
 }
 void build(int node,int l,int r)
 {
-    lazy[node] = -1;
+    lazy[node] = -1;//! change
     if(l == r){
         tree[node] = ar[l];
         return;
@@ -28,18 +27,18 @@ void build(int node,int l,int r)
     tree[node] = combine(tree[node*2],tree[node*2 + 1]);
 }
 void propagate(int node,int l,int r){
-    if(lazy[node] == -1)return;
+    if(lazy[node] == -1)return;//! change
     if(l != r){
-        lazy[2*node] = lazy[node];
-        lazy[2*node+1] = lazy[node];
+        lazy[2*node] = lazy[node];//! change
+        lazy[2*node+1] = lazy[node];//! change
     }
-    tree[node] = (r - l + 1) * lazy[node];
-    lazy[node] = -1;
+    tree[node] = lazy[node];//! change
+    lazy[node] = -1;//! change
 }
 int query(int node,int l,int r,int a,int b){
     propagate(node,l,r);
     if(l > b || r < a){
-        return  0;/// identical value return
+        return  oo;//! change
     }
     if(a <= l && r <= b){
         return tree[node];
@@ -53,7 +52,7 @@ void update(int node,int l,int r,int a,int b,int val){
     propagate(node,l,r);
     if(a > r || b < l)return;
     if(a <= l && r <= b){
-        lazy[node] = val;
+        lazy[node] = val;//! change
         propagate(node,l,r);
         return;
     }
