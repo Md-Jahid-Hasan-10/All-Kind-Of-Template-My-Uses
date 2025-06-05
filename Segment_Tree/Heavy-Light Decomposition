@@ -1,0 +1,117 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 1e5 + 5;
+int n, q;
+vector<int> tree[N];
+
+int parent[N], depth[N], heavy[N], head[N], pos[N], subsize[N];
+int cur_pos;
+
+long long segtree[4 * N], lazy[4 * N];
+
+void dfs(int u, int p) {
+    parent[u] = p;
+    subsize[u] = 1;
+    int max_sub = 0;
+    for (int v : tree[u]) {
+        if (v == p) continue;
+        depth[v] = depth[u] + 1;
+        dfs(v, u);
+        subsize[u] += subsize[v];
+        if (subsize[v] > max_sub) {
+            max_sub = subsize[v];
+            heavy[u] = v;
+        }
+    }
+}
+
+void decompose(int u, int h) {
+    head[u] = h;
+    pos[u] = cur_pos++;
+    if (heavy[u] != -1)
+        decompose(heavy[u], h);
+    for (int v : tree[u]) {
+        if (v != parent[u] && v != heavy[u])
+            decompose(v, v);
+    }
+}
+
+void push(int node, int l, int r) {
+    if (lazy[node] != 0) {
+        segtree[node] += lazy[node];
+        if (l != r) {
+            lazy[2 * node] += lazy[node];
+            lazy[2 * node + 1] += lazy[node];
+        }
+        lazy[node] = 0;
+    }
+}
+
+void update_range(int node, int l, int r, int ql, int qr, long long val) {
+    push(node, l, r);
+    if (qr < l || r < ql) return;
+    if (ql <= l && r <= qr) {
+        lazy[node] += val;
+        push(node, l, r);
+        return;
+    }
+    int mid = (l + r) / 2;
+    update_range(2 * node, l, mid, ql, qr, val);
+    update_range(2 * node + 1, mid + 1, r, ql, qr, val);
+    segtree[node] = max(segtree[2 * node], segtree[2 * node + 1]);
+}
+
+long long query_max(int node, int l, int r, int ql, int qr) {
+    push(node, l, r);
+    if (qr < l || r < ql) return LLONG_MIN;
+    if (ql <= l && r <= qr) return segtree[node];
+    int mid = (l + r) / 2;
+    return max(query_max(2 * node, l, mid, ql, qr),
+               query_max(2 * node + 1, mid + 1, r, ql, qr));
+}
+
+void subtree_add(int u, long long val) {
+    update_range(1, 0, n - 1, pos[u], pos[u] + subsize[u] - 1, val);
+}
+
+long long path_query(int u, int v) {
+    long long res = LLONG_MIN;
+    while (head[u] != head[v]) {
+        if (depth[head[u]] < depth[head[v]]) swap(u, v);
+        res = max(res, query_max(1, 0, n - 1, pos[head[u]], pos[u]));
+        u = parent[head[u]];
+    }
+    if (depth[u] > depth[v]) swap(u, v);
+    res = max(res, query_max(1, 0, n - 1, pos[u], pos[v]));
+    return res;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cin >> n;
+    for (int i = 1; i <= n; ++i) heavy[i] = -1;
+    for (int i = 0; i < n - 1; ++i) {
+        int u, v; cin >> u >> v;
+        tree[u].push_back(v);
+        tree[v].push_back(u);
+    }
+    dfs(1, 0);
+    cur_pos = 0;
+    decompose(1, 1);
+    cin >> q;
+    while (q--) {
+        string type;
+        cin >> type;
+        if (type == "add") {
+            int t, val;
+            cin >> t >> val;
+            subtree_add(t, val);
+        } else if (type == "max") {
+            int u, v;
+            cin >> u >> v;
+            cout << path_query(u, v) << '\n';
+        }
+    }
+}
