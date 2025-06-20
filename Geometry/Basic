@@ -21,6 +21,12 @@ dl sqnorm(pt a){
 dl dot(pt a, pt b){
     return (a.x*b.x + a.y*b.y);
 }
+pt rotateCCW(pt a,dl ang) {
+	pt v = {a.x,a.y};
+	dl c = cos(ang),s = sin(ang);
+	pt res = {v.x*c-v.y*s,v.x*s+v.y*c};
+	return res;
+}
 pt rotateCCW(pt a,pt b,dl ang)
 {
     pt v = {b.x-a.x,b.y-a.y};// vec from a to b
@@ -32,6 +38,19 @@ pt unit(pt a)
 {
     double val = sqrt(a.x*a.x+a.y*a.y);
     return pt(a.x/val,a.y/val);
+}
+//given point a,b and angle abc and len of bc then find point c
+pt find_point(pt a,pt b,dl ang,dl len) {
+	pt c = vec(b,a);
+	c = unit(c);
+	c.x *= len, c.y *= len;
+	c = rotateCCW(c,ang);
+	c.x += b.x, c.y += b.y;
+	return c;
+}
+pt find_point(pt b,dl ang,dl len) { //same as up
+	pt c = {b.x + len*cos(ang),b.y + len*sin(ang)};
+	return c;// here ang is CCW , if CW it PI - ang
 }
 dl angle(pt a,pt o,pt b){
     pt oa = vec(o , a), ob = vec(o , b);
