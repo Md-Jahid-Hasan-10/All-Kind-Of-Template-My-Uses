@@ -70,7 +70,7 @@ double angle(pt a, pt b) {
 int triArea2(const pt &a, const pt &b, const pt &c) {
     return (a.x*(b.y-c.y) + b.x*(c.y-a.y) + c.x*(a.y-b.y));
 }
-int sqDist(const pt &a, const pt &b) {
+dl sqDist(const pt &a, const pt &b) {
     return ((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
 }
 dl angle(dl a, dl b,dl c){
