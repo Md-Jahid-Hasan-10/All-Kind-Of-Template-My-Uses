@@ -48,6 +48,6 @@ struct Marge_Sort_Tree {
       update(idx, old_val, new_val, 0, 0, n);
    }
     int count(int lq, int rq, int mn, int mx) {
-        return count(lq - 1, rq, mn, mx, 0, 0, n);// query 1 base call l to r mn to mx cnt
+        return count(lq - 1, rq, mn, mx + 1, 0, 0, n);// query 1 base call l to r mn to mx cnt
     }
 };
