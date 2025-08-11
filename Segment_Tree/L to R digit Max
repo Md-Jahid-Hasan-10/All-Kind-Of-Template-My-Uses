@@ -1,0 +1,59 @@
+struct Node {
+    int digit[10];
+    Node() { fill(digit, digit+10, 0); }
+};
+
+struct SegTree {
+    int n;
+    vector<Node> st;
+
+    SegTree(int n_) : n(n_) {
+        st.resize(4*n);
+    }
+
+    Node merge(const Node &a, const Node &b) {
+        Node res;
+        for (int i = 0; i < 10; i++)
+            res.digit[i] = max(a.digit[i], b.digit[i]);
+        return res;
+    }
+
+    Node make_node(long long x) {
+        Node res;
+        for (int i = 9; i >= 0; i--) {
+            res.digit[i] = x % 10;
+            x /= 10;
+        }
+        return res;
+    }
+
+    void build(vector<long long> &arr, int p, int l, int r) {
+        if (l == r) {
+            st[p] = make_node(arr[l]);
+            return;
+        }
+        int mid = (l + r) / 2;
+        build(arr, p*2, l, mid);
+        build(arr, p*2+1, mid+1, r);
+        st[p] = merge(st[p*2], st[p*2+1]);
+    }
+
+    void update(int idx, long long val, int p, int l, int r) {
+        if (l == r) {
+            st[p] = make_node(val);
+            return;
+        }
+        int mid = (l + r) / 2;
+        if (idx <= mid) update(idx, val, p*2, l, mid);
+        else update(idx, val, p*2+1, mid+1, r);
+        st[p] = merge(st[p*2], st[p*2+1]);
+    }
+
+    Node query(int ql, int qr, int p, int l, int r) {
+        if (qr < l || r < ql) return Node();
+        if (ql <= l && r <= qr) return st[p];
+        int mid = (l + r) / 2;
+        return merge(query(ql, qr, p*2, l, mid),
+                     query(ql, qr, p*2+1, mid+1, r));
+    }
+};
