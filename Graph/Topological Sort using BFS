@@ -1,0 +1,32 @@
+vector<int> g[N];
+bool vis[N];
+
+void Goriber_solve()
+{
+    int n,m;
+    cin >> n >> m;
+    vi in_deg(n+1,0);
+    while(m--){
+        int u,v;
+        cin >> u >> v;
+        g[u].pb(v);
+        in_deg[v]++;
+    }
+    vi ord;
+    queue<int> q;
+    for(int i = 1; i <= n; i++){
+        if(in_deg[i] == 0)q.push(i);
+    }
+    bool ok = 1;
+    while(!q.empty()){
+        int u = q.front();
+        if(sz(q) > 1)ok = 0;
+        q.pop();
+        ord.pb(u);
+        for(auto v : g[u]){
+            in_deg[v]--;
+            if(in_deg[v] == 0)q.push(v);
+        }
+    }
+    c_out(ord);
+}
