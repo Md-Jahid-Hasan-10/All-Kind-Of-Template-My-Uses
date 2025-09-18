@@ -1,0 +1,7 @@
+int find_n(int x) {
+    int n = (-1 + sqrt(1 + 8 * x)) / 2;
+    if ((n * (n + 1)) / 2 > x) {
+        n--;
+    }
+    return n;
+}
