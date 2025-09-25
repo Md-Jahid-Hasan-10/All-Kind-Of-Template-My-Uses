@@ -85,12 +85,25 @@ triplate extendedEuclid(int a, int b)
     ans.y = (smallans.x - (a / b) * smallans.y);
     return ans;
 }
+int ex_gcd(int a,int b,int &x,int &y){
+    if(b == 0){
+        x = 1;
+        y = 0;
+        return a;
+    }
+    int x1,y1;
+    int ans = ex_gcd(b,a % b,x1,y1);
+    x = y1;
+    y = x1 - y1 * (a / b);
+    return ans;
+}
 void Goriber_solve()
 {
     int a,b;
     cin >> a >> b;
     triplate ans = extendedEuclid(a,b);
     cout << ans.x << " " << ans.y << " " << ans.gcd << endl;
+    cout << " GCD is " << ex_gcd(a,b) << endl;
 }
 signed main()
 {
