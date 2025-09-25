@@ -1,0 +1,19 @@
+map<int,int> bd;
+int phi(int x)
+{
+    if(bd.count(x))return bd[x];
+    int ans = x,val = x;
+    for(int i = 2; i * i <= x; i++){
+        if(val % i == 0){
+            while(val % i == 0)val /= i;
+            ans *= (i - 1);
+            ans /= i;
+        }
+    }
+    if(val > 1){
+        ans *= (val - 1);
+        ans /= val;
+    }
+    bd[x] = ans;
+    return ans;
+}
