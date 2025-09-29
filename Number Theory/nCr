@@ -24,7 +24,7 @@ int power(int a,int b,int mod)
     }
     return ans;
 }
-int fact[N];
+ll fact[N];
 void Pre()
 {
     fact[0] = 1;
@@ -32,11 +32,11 @@ void Pre()
         fact[i] = (fact[i-1] * i) % mod;
     }
 }
-int nCr(int n,int r)
+ll nCr(int n,int r)
 {
     if(n < r)return 0ll;
     ll up = fact[n];
-    int down = (fact[r]*fact[n-r]) % mod;
+    ll down = (fact[r]*fact[n-r]) % mod;
     down = power(down,mod-2,mod);
     ll res = (up * down) % mod;
     return res;
@@ -50,3 +50,49 @@ int nPr(int n,int r)
     ll res = (up * down) % mod;
     return res;
 }
+if need actual value and it fit into Long Long O(r) -------------->
+ll nCr(int n,int r){
+    ll ans = 1;
+    for(int i = 1; i <= r; i++){
+        ans *= (n - i + 1);
+        ans /= i;
+    }
+    return ans;
+}
+if need prime mod nCr O(N) --------------->
+const ll mod = 1e9+7;
+const ll N = 1e6+123;
+ll fact[N],inv[N];
+void Pre(){
+   fact[0] = 1;
+   for(int i = 1; i < N; i++){
+       fact[i] = (fact[i-1] * i) % mod;
+   }
+   inv[N-1] = power(fact[N-1],mod - 2,mod);
+   for(int i = N - 2; i >= 1; i--){
+       inv[i] = (inv[i+1] * (i + 1)) % mod;
+   }
+}
+ll nCr(int n,int r){
+   if(n < r)return 0LL;
+   return (((fact[n] * inv[r]) % mod) * inv[n - r]) % mod;
+}
+if we need non prime mod nCr O(n^2)----------->
+const ll N = 1e3+123;
+ll C[N][N];
+void Pre(){
+    for(int i = 0; i < N; i++){
+        C[i][0] = 1;
+        for(int j = 1; j <= i; j++){
+            C[i][j] = (C[i-1][j] + C[i-1][j-1]) % mod;
+        }
+    }
+}
+
+
+
+
+
+
+
+
