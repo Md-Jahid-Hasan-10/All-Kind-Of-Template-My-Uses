@@ -1,0 +1,33 @@
+int ex_gcd(int a,int b,int &x,int &y){
+    if(b == 0){
+        x = 1;
+        y = 0;
+        return a;
+    }
+    int x1,y1;
+    int ans = ex_gcd(b,a % b,x1,y1);
+    x = y1;
+    y = x1 - y1 * (a / b);
+    return ans;
+}
+int chinese_rem_theorem(int a,int m1,int b,int m2){
+    int p,q;
+    int gc = ex_gcd(m1,m2,p,q);
+    return (a*m2*q % (m1*m2) + b*m1*p % (m1*m2)) % (m1*m2);
+}
+void Goriber_solve()
+{
+    int n;
+    cin >> n;
+    vii a(n);
+    for(int i = 0; i < n; i++){
+        cin >> a[i].F >> a[i].S;
+    }
+    int x = chinese_rem_theorem(a[0].F,a[0].S,a[1].F,a[1].S);
+    int mm = lcm(a[0].S,a[1].S);
+    for(int i = 2; i < n; i++){
+        x = chinese_rem_theorem(x,mm,a[i].F,a[i].S);
+        mm = lcm(mm,a[i].S);
+    }
+    cout << x << endl;
+}
