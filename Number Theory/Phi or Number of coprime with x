@@ -17,3 +17,21 @@ int phi(int x)
     bd[x] = ans;
     return ans;
 }
+int phi[N];
+bool mark[N];
+void sieve(){
+    for(int i = 1; i < N; i++){
+        phi[i] = i;
+    }
+    for(int i = 2; i < N; i++){
+        if(mark[i])continue;
+        phi[i] = i - 1;
+        for(int j = i + i; j < N; j += i){
+            mark[j] = true;
+            phi[j] -= phi[j] / i;
+        }
+    }
+}
+
+
+
