@@ -1,0 +1,13 @@
+int mu[N];
+void mobius(){
+    for(int i = 1; i < N; i++){
+        mu[i] = 1;
+    }
+    for(auto u : primes){
+        int x = u * u;
+        for(int i = x; i < N; i += x)mu[i] = 0;
+    }
+    for(auto u : primes){
+        for(int i = u; i < N; i += u)mu[i] *= -1;
+    }
+}
