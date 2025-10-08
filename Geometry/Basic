@@ -3,7 +3,7 @@ struct pt {
     pt() : x(0), y(0) {}
     pt(dl a, dl b) : x(a), y(b) {}
 };
-// Function to calculate the cross product (direction) of vectors (p1p2) and (p1p3)
+// Function to calculate the cross product (Oriantation) of vectors (p1p2) and (p1p3)
 int direction(const pt &p1, const pt &p2, const pt &p3) {
     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
