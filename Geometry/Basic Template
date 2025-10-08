@@ -3,6 +3,8 @@ using namespace std;
 
 // Coordinate type (can be int, long double, etc.)
 typedef double T;
+// epsilon for floating point comparisons
+const double EPS = 1e-9; 
 // 2D Point structure
 struct pt {
     T x, y;
@@ -52,7 +54,64 @@ pt proj(pt a, pt b) {
 ostream& operator<<(ostream& os, pt p) {
     return os << "(" << p.x << "," << p.y << ")";
 }
+// --- Line structure ---
+struct line {
+    pt v; T c;
 
+    // From direction vector v and constant c
+    line(pt v, T c) : v(v), c(c) {}
+
+    // From points P and Q
+    line(pt p, pt q) { v = q - p; c = cross(v, p); }
+
+    // Returns ax + by - c
+    T side(pt p) { return cross(v, p) - c; }
+
+    // Distance from point to line
+    double dist(pt p) { return fabs(side(p)) / abs(v); }
+
+    // Translate line by vector t
+    line translate(pt t) { return {v, c + cross(v, t)}; }
+
+    // Shift line left/right by distance dist
+    line shiftLeft(double dist) { return {v, c + dist * abs(v)}; }
+};
+
+// --- Line intersection ---
+bool inter(line l1, line l2, pt &out) {
+    T d = cross(l1.v, l2.v);
+    if (fabs(d) < EPS) return false; // parallel or identical
+    out = (l2.v * l1.c - l1.v * l2.c) / d;
+    return true;
+}
+// ---------------- SEGMENT HELPERS ----------------
+bool inDisk(pt a, pt b, pt p) { return dot(a - p, b - p) <= EPS; }
+
+bool onSegment(pt a, pt b, pt p) {
+    return fabs(cross(b - a, p - a)) < EPS && inDisk(a, b, p);
+}
+
+// ---------------- INTERSECTIONS ----------------
+bool properInter(pt a, pt b, pt c, pt d, pt &out) {
+    double oa = cross(d - c, a - c);
+    double ob = cross(d - c, b - c);
+    double oc = cross(b - a, c - a);
+    double od = cross(b - a, d - a);
+    if (oa * ob < 0 && oc * od < 0) {
+        out = (a * ob - b * oa) / (ob - oa);
+        return true;
+    }
+    return false;
+}
+// -- Segment - line distance --
+double segPoint(pt a, pt b, pt p) {
+    if (a != b) {
+        line l(a, b);
+        if (dot(b - a, p - a) >= 0 && dot(a - b, p - b) >= 0)
+            return l.dist(p);
+    }
+    return min(abs(p - a), abs(p - b));
+}
 // Example usage
 int main() {
     pt a = {3, 4};
