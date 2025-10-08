@@ -1,0 +1,76 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Coordinate type (can be int, long double, etc.)
+typedef double T;
+// 2D Point structure
+struct pt {
+    T x, y;
+
+    // Vector arithmetic
+    pt operator+(pt p) const { return {x + p.x, y + p.y}; }
+    pt operator-(pt p) const { return {x - p.x, y - p.y}; }
+    pt operator*(T d)  const { return {x * d, y * d}; }
+    pt operator/(T d)  const { return {x / d, y / d}; }
+};
+
+// Comparison
+bool operator==(pt a, pt b) { return a.x == b.x && a.y == b.y; }
+bool operator!=(pt a, pt b) { return !(a == b); }
+
+// Length utilities
+T sq(pt p) { return p.x * p.x + p.y * p.y; }   // squared length
+double abs(pt p) { return sqrt(sq(p)); }       // actual length (magnitude)
+
+// Dot and Cross Product
+T dot(pt a, pt b) { return a.x * b.x + a.y * b.y; }         // dot product
+T cross(pt a, pt b) { return a.x * b.y - a.y * b.x; }       // cross product
+
+// Distance between two points
+double dist(pt a, pt b) { return abs(a - b); }
+
+// Unit vector (normalize)
+pt unit(pt p) { return p / abs(p); }
+
+// Rotate point p around origin by angle 'ang' (in radians)
+pt rotate(pt p, double ang) {
+    return {p.x * cos(ang) - p.y * sin(ang),
+            p.x * sin(ang) + p.y * cos(ang)};
+}
+
+// Angle between two vectors
+double angle(pt a, pt b) {
+    return acos(dot(a, b) / (abs(a) * abs(b)));
+}
+
+// Projection of a onto b
+pt proj(pt a, pt b) {
+    return b * (dot(a, b) / sq(b));
+}
+
+// Print nicely
+ostream& operator<<(ostream& os, pt p) {
+    return os << "(" << p.x << "," << p.y << ")";
+}
+
+// Example usage
+int main() {
+    pt a = {3, 4};
+    pt b = {1, 0};
+    cout << fixed << setprecision(6);
+
+    cout << "a = " << a << ", b = " << b << "\n";
+    cout << "Dot product (a·b): " << dot(a, b) << "\n";
+    cout << "Cross product (a×b): " << cross(a, b) << "\n";
+    cout << "Distance |a - b|: " << dist(a, b) << "\n";
+    cout << "Length of a: " << abs(a) << "\n";
+    cout << "Unit vector of a: " << unit(a) << "\n";
+
+    double ang = M_PI / 4; // 45 degrees
+    cout << "Rotate a by 45°: " << rotate(a, ang) << "\n";
+
+    cout << "Angle between a and b (radians): " << angle(a, b) << "\n";
+    cout << "Projection of a on b: " << proj(a, b) << "\n";
+
+    return 0;
+}
