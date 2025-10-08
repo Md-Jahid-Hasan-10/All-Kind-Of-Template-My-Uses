@@ -112,6 +112,16 @@ double segPoint(pt a, pt b, pt p) {
     }
     return min(abs(p - a), abs(p - b));
 }
+pt circumCenter(pt a, pt b, pt c) {
+    // Translate so that A is at origin
+    b = b - a;
+    c = c - a;
+    // If A, B, C are collinear, no circumcircle exists
+    assert(fabs(cross(b, c)) > 1e-9);
+    // Formula: a + perp(b*|c|² - c*|b|²) / (2 * cross(b, c))
+    return a + perp(b * sq(c) - c * sq(b)) / (2 * cross(b, c));
+}
+
 // Example usage
 int main() {
     pt a = {3, 4};
