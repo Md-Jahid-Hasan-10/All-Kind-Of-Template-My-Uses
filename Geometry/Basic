@@ -1,7 +1,7 @@
 struct pt {
-    int x, y;
+    dl x, y;
     pt() : x(0), y(0) {}
-    pt(int a, int b) : x(a), y(b) {}
+    pt(dl a, dl b) : x(a), y(b) {}
 };
 // Function to calculate the cross product (direction) of vectors (p1p2) and (p1p3)
 int direction(const pt &p1, const pt &p2, const pt &p3) {
