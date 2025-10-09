@@ -1,0 +1,11 @@
+
+    p[n] = p[0];
+    int area = 0,b = 0;
+    for(int i = 0; i < n; i++){
+        Point l = p[i], r = p[i+1];
+        area += (l.x * r.y - r.x * l.y);
+        l.x -= r.x, l.y -= r.y;
+        int g = gcd(l.x, l.y);
+        b += abs(g);
+    }
+    int a = abs(area) - b + 2;
