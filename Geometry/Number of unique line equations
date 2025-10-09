@@ -1,26 +1,16 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int gcd(int a, int b) { return b ? gcd(b, a%b) : a; }
-int gcd3(int a, int b, int c) { return gcd(gcd(a,b),c); }
-
-tuple<int,int,int> norm(int a, int b, int c) {
-    int d = gcd3(a,b,c);
-    a/=d; b/=d; c/=d;
-    int s = a?a:b?b:c;
-    if(s < 0) a=-a, b=-b, c=-c;
-    return {a,b,c};
-}
-
-int countLines(vector<pair<int,int>>& p) {
-    set<tuple<int,int,int>> s;
-    for(int i=0; i<p.size(); i++)
-        for(int j=i+1; j<p.size(); j++) {
-            auto [x1,y1]=p[i], [x2,y2]=p[j];
-            int a=y2-y1, b=x1-x2, c=x2*y1-x1*y2;
-            s.insert(norm(a,b,c));
-        }
-    return s.size();
+//Function to get a normalized line representation between two integer points
+pair<pair<ll,ll>, ll> get_line(pt a, pt b) {
+    ll dx = b.x - a.x;
+    ll dy = b.y - a.y;
+    ll A = -dy, B = dx;
+    ll g = __gcd(abs(A), abs(B));
+    A /= g; B /= g;
+    if(A < 0 || (A == 0 && B < 0)) A *= -1, B *= -1;
+    ll C = A*a.x + B*a.y;
+    return {{A,B}, C};
 }
 
 int main() {
