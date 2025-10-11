@@ -62,6 +62,7 @@ const ll inf = 1e18;
 
 struct Node{
     Node* links[2];
+    int cnt[2] = {0};
     bool contains(int bit){
         return (links[bit] != NULL);
     }
@@ -70,6 +71,15 @@ struct Node{
     }
     Node* get(int bit){
         return links[bit];
+    }
+    void cntIncrement(int bit){
+        cnt[bit]++;
+    }
+    void cntDecrement(int bit){
+        cnt[bit]--;
+    }
+    int getCnt(int bit){
+        return cnt[bit];
     }
 };
 
@@ -88,6 +98,15 @@ public:
             if(!cur_node -> contains(bit)){
                 cur_node -> put(bit, new Node());
             } 
+            cur_node -> cntIncrement(bit);
+            cur_node = cur_node -> get(bit);
+        }
+    }
+    void remove(int num){
+        Node* cur_node = root;
+        for(int i = 31; i >= 0; i--){
+            int bit = (num >> i) & 1;
+            cur_node -> cntDecrement(bit);
             cur_node = cur_node -> get(bit);
         }
     }
@@ -96,7 +115,7 @@ public:
         int mx = 0;
         for(int i = 31; i >= 0; i--){
             int bit = (num >> i) & 1;
-            if(cur_node -> contains(bit ^ 1)){
+            if(cur_node -> contains(bit ^ 1) && cur_node -> getCnt(bit ^ 1) > 0){
                 mx = ((1LL << i) | mx);
                 cur_node = cur_node -> get(bit ^ 1);
             }
@@ -111,28 +130,31 @@ public:
 
 void Goriber_solve()
 {
-    int n,m;
     Trie trie;
-    cin >> n >> m;
-    for(int i = 0; i < n; i++){
+    trie.insert(0);
+    int n;
+    cin >> n;
+    for(int i = 1; i <= n; i++){
+        char c;
         int x;
-        cin >> x;
-        trie.insert(x);
+        cin >> c >> x;
+        if(c == '+'){
+            trie.insert(x);
+        }
+        else if(c == '-'){
+            trie.remove(x);
+        }
+        else{
+            cout << trie.getMax(x) << endl;
+        }
     }
-    int ans = 0;
-    for(int i = 0; i < m; i++){
-        int x;
-        cin >> x;
-        ans = max(ans, trie.getMax(x));
-    }
-    cout << ans << endl;
 }
 signed main()
 {
  
     Fokinnir_moto_kaj_koris_na
     int _ = 1,tc = 0;
-    cin >> _;
+    //cin >> _;
     while (_--)
     {
         //cout<<"Case "<<++tc<<": ";
