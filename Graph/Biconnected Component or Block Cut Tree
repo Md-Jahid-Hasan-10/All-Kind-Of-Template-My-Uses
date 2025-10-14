@@ -1,18 +1,59 @@
-//bcc[i] is which num of Biconnected element it
-//Dont forget clear G and reset o to variable
-vi g[N],bcc[N],st;int low[N],dis[N],T,sz;
-void dfs(int u, int pre = 0) {
-  low[u] = dis[u] = ++T;st.push_back(u);
-  for(auto v: g[u]) {
-    if(!dis[v]) {dfs(v, u);
-      low[u] = min(low[u], low[v]);
-      if(low[v] >= dis[u]) {
-        sz ++;int x;
-        do {
-          x = st.back();st.pop_back();
-          bcc[x].push_back(sz);
-        } while(x ^ v);
-        bcc[u].push_back(sz);
-      }
-    } else if(v != pre) low[u] = min(low[u], dis[v]);
- }}//if bcc[u].size() > 1 it is an AP
+//bcc[i] is which num Biconnected element it
+set<int> g[N];//use set avoid multiple same edges
+vector<int> bcc[N], st;
+int low[N], dis[N], T = 0, sz = 0;
+vector<vector<int>> allBCC;
+void dfs(int u, int pre = -1) {
+    low[u] = dis[u] = ++T;
+    st.push_back(u);
+    for(auto v : g[u]) {
+        if(!dis[v]) {
+            dfs(v, u);
+            low[u] = min(low[u], low[v]);
+            if(low[v] >= dis[u]) {
+                sz++;vector<int> comp;
+                int x;
+                do{
+                    x = st.back();
+                    st.pop_back();
+                    bcc[x].push_back(sz);
+                    comp.push_back(x);
+                } while (x != v);
+                bcc[u].push_back(sz);
+                comp.push_back(u);
+                sort(comp.begin(), comp.end());
+                comp.erase(unique(comp.begin(), comp.end()), comp.end());
+                allBCC.push_back(comp);
+            }
+        } 
+        else if(v != pre)
+            low[u] = min(low[u], dis[v]);
+    }
+}
+void Goriber_solve()
+{
+    int n,m;
+    cin >> n >> m;
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        if (u == v) continue;
+        g[u].insert(v);
+        g[v].insert(u);
+    }
+    for (int i = 0; i < n; i++)
+        if (!dis[i])
+            dfs(i);
+    for (int i = 0; i < n; i++) {
+        if (g[i].empty()) {
+            sz++;
+            allBCC.push_back({i});
+        }
+    }
+    cout << allBCC.size() << "\n";
+    for (auto &comp : allBCC) {
+        cout << comp.size();
+        for (int x : comp) cout << " " << x;
+        cout << "\n";
+    }
+}//if bcc[u].size() > 1 it is an AP
