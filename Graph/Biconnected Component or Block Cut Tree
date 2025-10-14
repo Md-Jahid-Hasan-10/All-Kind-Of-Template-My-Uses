@@ -1,4 +1,5 @@
-//bcc[i] is which num Biconnected element it
+//bcc[i] is which num of Biconnected element it
+//Dont forget clear G and reset o to variable
 vi g[N],bcc[N],st;int low[N],dis[N],T,sz;
 void dfs(int u, int pre = 0) {
   low[u] = dis[u] = ++T;st.push_back(u);
