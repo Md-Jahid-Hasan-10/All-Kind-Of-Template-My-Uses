@@ -35,6 +35,9 @@ public:
             Size[pu] += Size[pv];
         }
     }
+    int size(int node){
+        return Size[find_par(node)];
+    }
 };
 int main()
 {
