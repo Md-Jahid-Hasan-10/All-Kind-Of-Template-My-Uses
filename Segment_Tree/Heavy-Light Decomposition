@@ -1,117 +1,116 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N = 1e5 + 5;
-int n, q;
-vector<int> tree[N];
+const int N = 200005;
+vector<pair<int,int>> adj[N];
+int parent[N][20], depth[N], heavy[N], head[N], pos[N];
+int sz[N], arr[N], baseArray[N], seg[4*N], U[N], V[N];
+int n, curPos;
 
-int parent[N], depth[N], heavy[N], head[N], pos[N], subsize[N];
-int cur_pos;
+int dfs(int v, int p) {
+    parent[v][0] = p;
+    depth[v] = depth[p] + 1;
+    sz[v] = 1;
+    int mx = 0;
+    for (auto &e : adj[v]) {
+        int u = e.first;
+        if (u == p) continue;
+        int w = e.second;
+        arr[u] = w;                 // store edge weight in child
+        int sub = dfs(u, v);
+        sz[v] += sub;
+        if (sub > mx) mx = sub, heavy[v] = u;
+    }
+    return sz[v];
+}
 
-long long segtree[4 * N], lazy[4 * N];
+void decompose(int v, int h) {
+    head[v] = h;
+    pos[v] = curPos++;
+    baseArray[pos[v]] = arr[v];
 
-void dfs(int u, int p) {
-    parent[u] = p;
-    subsize[u] = 1;
-    int max_sub = 0;
-    for (int v : tree[u]) {
-        if (v == p) continue;
-        depth[v] = depth[u] + 1;
-        dfs(v, u);
-        subsize[u] += subsize[v];
-        if (subsize[v] > max_sub) {
-            max_sub = subsize[v];
-            heavy[u] = v;
+    if (heavy[v])
+        decompose(heavy[v], h);
+
+    for (auto &e : adj[v]) {
+        int u = e.first;
+        if (u != parent[v][0] && u != heavy[v]) {
+            decompose(u, u);
         }
     }
 }
 
-void decompose(int u, int h) {
-    head[u] = h;
-    pos[u] = cur_pos++;
-    if (heavy[u] != -1)
-        decompose(heavy[u], h);
-    for (int v : tree[u]) {
-        if (v != parent[u] && v != heavy[u])
-            decompose(v, v);
-    }
+void build(int idx, int l, int r) {
+    if (l == r) { seg[idx] = baseArray[l]; return; }
+    int mid = (l+r)/2;
+    build(idx*2, l, mid);
+    build(idx*2+1, mid+1, r);
+    seg[idx] = max(seg[idx*2], seg[idx*2+1]);
 }
 
-void push(int node, int l, int r) {
-    if (lazy[node] != 0) {
-        segtree[node] += lazy[node];
-        if (l != r) {
-            lazy[2 * node] += lazy[node];
-            lazy[2 * node + 1] += lazy[node];
-        }
-        lazy[node] = 0;
-    }
+void update(int idx, int l, int r, int p, int v) {
+    if (l == r) { seg[idx] = v; return; }
+    int mid = (l+r)/2;
+    if (p <= mid) update(idx*2, l, mid, p, v);
+    else update(idx*2+1, mid+1, r, p, v);
+    seg[idx] = max(seg[idx*2], seg[idx*2+1]);
 }
 
-void update_range(int node, int l, int r, int ql, int qr, long long val) {
-    push(node, l, r);
-    if (qr < l || r < ql) return;
-    if (ql <= l && r <= qr) {
-        lazy[node] += val;
-        push(node, l, r);
-        return;
-    }
-    int mid = (l + r) / 2;
-    update_range(2 * node, l, mid, ql, qr, val);
-    update_range(2 * node + 1, mid + 1, r, ql, qr, val);
-    segtree[node] = max(segtree[2 * node], segtree[2 * node + 1]);
+int querySeg(int idx, int l, int r, int L, int R) {
+    if (r < L || R < l) return 0;
+    if (L <= l && r <= R) return seg[idx];
+    int mid = (l+r)/2;
+    return max(querySeg(idx*2, l, mid, L, R),
+               querySeg(idx*2+1, mid+1, r, L, R));
 }
 
-long long query_max(int node, int l, int r, int ql, int qr) {
-    push(node, l, r);
-    if (qr < l || r < ql) return LLONG_MIN;
-    if (ql <= l && r <= qr) return segtree[node];
-    int mid = (l + r) / 2;
-    return max(query_max(2 * node, l, mid, ql, qr),
-               query_max(2 * node + 1, mid + 1, r, ql, qr));
-}
-
-void subtree_add(int u, long long val) {
-    update_range(1, 0, n - 1, pos[u], pos[u] + subsize[u] - 1, val);
-}
-
-long long path_query(int u, int v) {
-    long long res = LLONG_MIN;
+int queryPath(int u, int v) {
+    int res = 0;
     while (head[u] != head[v]) {
         if (depth[head[u]] < depth[head[v]]) swap(u, v);
-        res = max(res, query_max(1, 0, n - 1, pos[head[u]], pos[u]));
-        u = parent[head[u]];
+        res = max(res, querySeg(1, 0, n-1, pos[head[u]], pos[u]));
+        u = parent[head[u]][0];
     }
+    if (u == v) return res;
     if (depth[u] > depth[v]) swap(u, v);
-    res = max(res, query_max(1, 0, n - 1, pos[u], pos[v]));
-    return res;
+    return max(res, querySeg(1, 0, n-1, pos[u]+1, pos[v]));
 }
 
 int main() {
     ios::sync_with_stdio(false);
-    cin.tie(0);
-    cin >> n;
-    for (int i = 1; i <= n; ++i) heavy[i] = -1;
-    for (int i = 0; i < n - 1; ++i) {
-        int u, v; cin >> u >> v;
-        tree[u].push_back(v);
-        tree[v].push_back(u);
-    }
-    dfs(1, 0);
-    cur_pos = 0;
-    decompose(1, 1);
-    cin >> q;
-    while (q--) {
-        string type;
-        cin >> type;
-        if (type == "add") {
-            int t, val;
-            cin >> t >> val;
-            subtree_add(t, val);
-        } else if (type == "max") {
-            int u, v;
-            cin >> u >> v;
-            cout << path_query(u, v) << '\n';
+    cin.tie(nullptr);
+
+    int t; cin >> t;
+    while (t--) {
+        cin >> n;
+        for (int i = 1; i <= n; i++) {
+            adj[i].clear();
+            heavy[i] = 0;
+        }
+        for (int i = 1; i < n; i++) {
+            int u,v,c;
+            cin >> u >> v >> c;
+            adj[u].push_back({v,c});
+            adj[v].push_back({u,c});
+            U[i] = u; V[i] = v;
+        }
+        depth[0] = 0; curPos = 0;
+        dfs(1,0);
+        decompose(1,1);
+        build(1,0,n-1);
+
+        while (true) {
+            string s; cin >> s;
+            if (s == "DONE") break;
+            if (s == "QUERY") {
+                int u, v; cin >> u >> v;
+                cout << queryPath(u, v) << "\n";
+            } else { // CHANGE
+                int i, val; cin >> i >> val;
+                int u = U[i], v = V[i];
+                if (depth[u] > depth[v]) update(1,0,n-1,pos[u],val);
+                else update(1,0,n-1,pos[v],val);
+            }
         }
     }
 }
