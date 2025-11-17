@@ -1,6 +1,5 @@
 const int N = 1e6 + 10;
-vector<int> primes;
-vector<int> isComposite(N + 1, 0);
+vector<int> primes,isComposite(N + 1, 0);
 int mu[N];
 void mobius(){
     mu[1] = 1;
