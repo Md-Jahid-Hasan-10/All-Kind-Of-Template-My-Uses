@@ -20,3 +20,18 @@ void mobius(){
         }
     }
 }
+1-> Number of unordered pairs(i, j) with gcd(a_i, a_j) = 1
+freq[x] = how many array elements equal x
+cnt[d] = number of array elements divisible by d
+pair count = sum{1 to (mx of ar) as d} mu[d] * nCr(cnt[d],2)
+subsequence count = sum{1 to mx} mu[d] * (pow(2,cnt[d])-1)
+2->How many pair range[1..N] gcd(x,y) = 1
+ans = sum{1 to N as d} mu[d]* (N/d)^2
+3-> Count Numbers <= N that are divisable by none of primes
+L = lcm of all prime.. divs = all divisor of L
+ans = sum{divs as d} mu[d]*(N/d)
+4-> How many squre free num in [1..N]
+count = sum{1 to sqrt(N) as d} mu[d]*(N/(d*d))
+5-> how many Lattice point with gcd = 1 or
+1 <= x <= n and 1 <= y <= m and gcd(x,y) = 1
+ans = sum{1 to min(x,y) as d} mu[d]*(n/d)*(m/d)
