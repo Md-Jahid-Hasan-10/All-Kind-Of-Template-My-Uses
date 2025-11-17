@@ -1,35 +1,23 @@
+const int N = 1e6 + 10;
 vector<int> primes;
-bitset<N>is_prime;
-
-void sieve_v0() {
-  for (int i = 3; i < N; i += 2) {
-    is_prime[i] = 1;
-  }
-  for (int i = 3; i * i < N; i += 2) {
-    if (is_prime[i]) {
-      for (int j = i * i; j < N; j += i) {
-        is_prime[j] = 0;
-      }
-    }
-  }
-  is_prime[2] = 1;
-  for (int i = 2; i < N; i++) {
-    if(is_prime[i]){
-      primes.push_back(i);
-    }
-  }
-}
-// mobius start
+vector<int> isComposite(N + 1, 0);
 int mu[N];
 void mobius(){
-    for(int i = 1; i < N; i++){
-        mu[i] = 1;
-    }
-    for(auto u : primes){
-        int x = u * u;
-        for(int i = x; i < N; i += x)mu[i] = 0;
-    }
-    for(auto u : primes){
-        for(int i = u; i < N; i += u)mu[i] *= -1;
+    mu[1] = 1;
+    for(int i = 2; i <= N; i++) {
+        if(!isComposite[i]) {
+            primes.push_back(i);
+            mu[i] = -1;
+        }
+        for(int p : primes) {
+            if (1LL * i * p > N) break;
+            isComposite[i * p] = 1;
+            if (i % p == 0) {
+                mu[i * p] = 0;
+                break;
+            } else {
+                mu[i * p] = -mu[i];
+            }
+        }
     }
 }
