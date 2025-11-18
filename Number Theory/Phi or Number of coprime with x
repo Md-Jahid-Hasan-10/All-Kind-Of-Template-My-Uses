@@ -49,5 +49,6 @@ long long euler_phi(long long x){
 	}
 	return ans;
 }
-
+1-> f(n) = gcd(1,n)+gcd(2,n)+...+gcd(n,n)
+ans,f(n) = sum{divisor of n as d} d * phi(n/d)
 
