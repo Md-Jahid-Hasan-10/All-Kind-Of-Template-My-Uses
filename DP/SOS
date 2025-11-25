@@ -5,6 +5,11 @@ using namespace std;
 const int mod = 1e9 + 7;
 const int N = 20;
 const int M = (1 << N);
+application -->
+1.number of element y such that x|y=x ->add_super
+2.number of element y such that x&y=x ->add_sub
+3.number of element y such that x&y=0 ->add_super(2^bit-1)^x
+4.(a1&a2&a4&a5&..&ax) = k -> add_sub(cnt[]),cnt[i]=pow(2,cnt[i])-1,remove_sub(cnt[]);
 
 void add_super(int dp[]){
     for(int bit = 0; bit < N; bit++){
