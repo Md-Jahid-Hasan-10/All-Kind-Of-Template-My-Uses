@@ -1,16 +1,17 @@
+//! In The Name Of Allah
 #include <bits/stdc++.h>
 using namespace std;
 
-#define int long long
-
-const ll N = 20;
-const ll M = (1 << N);
+const int mod = 1e9 + 7;
+const int N = 20;
+const int M = (1 << N);
 
 void add_super(int dp[]){
     for(int bit = 0; bit < N; bit++){
         for(int i = 0; i < M; i++){
             if(i & (1 << bit)){
                 dp[i] += dp[i^(1<<bit)];
+                dp[i] %= mod;
             }
         }
     }
@@ -19,7 +20,7 @@ void remove_super(int dp[]){
     for(int bit = 0; bit < N; bit++){
         for(int i = M-1; i >= 0; i--){
             if(i & (1 << bit)){
-                dp[i] -= dp[i^(1<<bit)];
+                dp[i] = (dp[i] - dp[i^(1<<bit)] + mod) % mod;
             }
         }
     }
@@ -29,6 +30,7 @@ void add_sub(int dp[]){
         for(int i = M - 1; i >= 0; i--){
             if(i & (1 << bit)){
                 dp[i^(1<<bit)] += dp[i];
+                dp[i^(1<<bit)] %= mod;
             }
         }
     }
@@ -37,7 +39,7 @@ void remove_sub(int dp[]){
     for(int bit = 0; bit < N; bit++){
         for(int i = 0; i < M; i++){
             if(i & (1 << bit)){
-                dp[i^(1<<bit)] -= dp[i];
+                dp[i^(1<<bit)] = (dp[i^(1<<bit)] - dp[i] + mod) % mod;
             }
         }
     }
