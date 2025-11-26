@@ -1,116 +1,178 @@
+//! In The Name Of Allah
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N = 200005;
-vector<pair<int,int>> adj[N];
-int parent[N][20], depth[N], heavy[N], head[N], pos[N];
-int sz[N], arr[N], baseArray[N], seg[4*N], U[N], V[N];
-int n, curPos;
+#define ll long long
+#define int long long
+#define endl '\n'
+#define F first
+#define S second
+#define all(s) (s).begin(), (s).end()
+#define rall(s) s.rbegin(), s.rend()
+#define sz(x) (int)x.size()
+#define Fokinnir_moto_kaj_koris_na \
+    ios_base::sync_with_stdio(0);  \
+    cin.tie(0);                    \
+    cout.tie(0);
+typedef vector<int> vi;
+typedef array<int,3> tu;
 
-int dfs(int v, int p) {
-    parent[v][0] = p;
-    depth[v] = depth[p] + 1;
-    sz[v] = 1;
+const ll N = 1e5 + 123;
+const ll M = 4*N + 5;
+int Sz[N],heavy[N],Par[N],lev[N];
+int Head[N],pos[N],idx = 1,ar[N],val[N];
+vi graph[N];
+
+ll tree[M];
+ll combine(int a,int b)
+{
+    return max(a,b);
+}
+void init(int node,int b,int e)
+{
+    if(b == e){
+        tree[node] = ar[b];
+        return;
+    }
+    int Left = node * 2;
+    int Right = node * 2 + 1;
+    int mid = (b+e)/2;
+    init(Left,b,mid);
+    init(Right,mid+1,e);
+    tree[node] = combine(tree[Left] , tree[Right]);
+}
+ 
+ll query(int node,int b,int e,int i,int j)
+{
+    if(i>e || j<b)return 0;
+    if(i<=b && j>=e){
+        return tree[node];
+    }
+    int Left = node * 2;
+    int Right = node * 2 + 1;
+    int mid = (b+e)/2;
+    ll p1 = query(Left,b,mid,i,j);
+    ll p2 = query(Right,mid+1,e,i,j);
+    return combine(p1,p2);
+}
+ 
+void upgrade(int node,int b,int e,int i,int newValue)
+{
+    if(b == e){
+        tree[node] = newValue;
+        ar[b] = newValue;
+        return;
+    }
+    int Left = node * 2;
+    int Right = node * 2 + 1;
+    int mid = (b+e)/2;
+    if(i <= mid)upgrade(Left,b,mid,i,newValue);
+    else upgrade(Right,mid+1,e,i,newValue);
+    tree[node] = combine(tree[Left] , tree[Right]);
+}
+void dfs(int node,int pa){
+    Sz[node] = 1;
+    Par[node] = pa;
+    for(auto u : graph[node]){
+        if(u == pa)continue;
+        lev[u] = lev[node] + 1;
+        dfs(u,node);
+        Sz[node] += Sz[u];
+        if(Sz[u] > Sz[heavy[node]] || heavy[node] == 0){
+            heavy[node] = u;
+        }
+    }
+}
+void dfsHLD(int node,int chain){
+    Head[node] = chain;
+    ar[idx] = val[node];
+    pos[node] = idx;
+    idx++;
+    if(heavy[node] != 0){
+        dfsHLD(heavy[node],chain);
+    }
+    for(auto u : graph[node]){
+        if(u == Par[node])continue;
+        if(heavy[node] != u){
+            dfsHLD(u,u);
+        }
+    }
+}
+int Query(int a,int b){
     int mx = 0;
-    for (auto &e : adj[v]) {
-        int u = e.first;
-        if (u == p) continue;
-        int w = e.second;
-        arr[u] = w;                 // store edge weight in child
-        int sub = dfs(u, v);
-        sz[v] += sub;
-        if (sub > mx) mx = sub, heavy[v] = u;
+    while(Head[a] != Head[b]){
+        if(lev[Head[a]] < lev[Head[b]]){
+            swap(a,b);
+        }
+        mx = max(mx,query(1,1,idx,pos[Head[a]],pos[a]));
+        a = Par[Head[a]];
     }
-    return sz[v];
+    if(lev[a] < lev[b])swap(a,b);
+    int l = pos[b]+1,r = pos[a];
+    if(l <= r)mx = max(mx,query(1,1,idx,l,r));
+    return mx;
 }
-
-void decompose(int v, int h) {
-    head[v] = h;
-    pos[v] = curPos++;
-    baseArray[pos[v]] = arr[v];
-
-    if (heavy[v])
-        decompose(heavy[v], h);
-
-    for (auto &e : adj[v]) {
-        int u = e.first;
-        if (u != parent[v][0] && u != heavy[v]) {
-            decompose(u, u);
+void Goriber_solve()
+{
+    int n,q;
+    cin >> n;
+    for(int i = 1; i <= n; i++){
+        graph[i].clear();
+        Sz[i] = 0;
+        lev[i] = 0;
+        heavy[i] = 0;
+        pos[i] = 0,val[i] = 0;
+        Head[i] = 0,Par[i] = 0;
+    }
+    map<int,pair<int,int>> bd;
+    vector<tu> edge;
+    for(int i = 1; i < n; i++){
+        int u,v,w;
+        cin >> u >> v >> w;
+        graph[u].push_back(v);
+        graph[v].push_back(u);
+        bd[i] = {u,v};
+        edge.push_back({u,v,w});
+    }
+    idx = 1;
+    dfs(1,0);
+    val[1] = 0;
+    for(auto u : edge){
+        int a = u[0];
+        if(lev[u[0]] < lev[u[1]])a = u[1];
+        val[a] = u[2];
+    }
+    dfsHLD(1,1);
+    init(1,1,idx);
+    while(1){
+        string s;
+        cin >> s;
+        if(s == "DONE")break;
+        if(s == "CHANGE"){
+            int i,v;
+            cin >> i >> v;
+            pair<int,int> x = bd[i];
+            int a = x.F;
+            if(lev[x.F] < lev[x.S])a = x.S;
+            int del = pos[a];
+            upgrade(1,1,idx,del,v);
+        }
+        else{
+            int a,b;
+            cin >> a >> b;
+            cout << Query(a,b) << endl;
         }
     }
 }
-
-void build(int idx, int l, int r) {
-    if (l == r) { seg[idx] = baseArray[l]; return; }
-    int mid = (l+r)/2;
-    build(idx*2, l, mid);
-    build(idx*2+1, mid+1, r);
-    seg[idx] = max(seg[idx*2], seg[idx*2+1]);
-}
-
-void update(int idx, int l, int r, int p, int v) {
-    if (l == r) { seg[idx] = v; return; }
-    int mid = (l+r)/2;
-    if (p <= mid) update(idx*2, l, mid, p, v);
-    else update(idx*2+1, mid+1, r, p, v);
-    seg[idx] = max(seg[idx*2], seg[idx*2+1]);
-}
-
-int querySeg(int idx, int l, int r, int L, int R) {
-    if (r < L || R < l) return 0;
-    if (L <= l && r <= R) return seg[idx];
-    int mid = (l+r)/2;
-    return max(querySeg(idx*2, l, mid, L, R),
-               querySeg(idx*2+1, mid+1, r, L, R));
-}
-
-int queryPath(int u, int v) {
-    int res = 0;
-    while (head[u] != head[v]) {
-        if (depth[head[u]] < depth[head[v]]) swap(u, v);
-        res = max(res, querySeg(1, 0, n-1, pos[head[u]], pos[u]));
-        u = parent[head[u]][0];
-    }
-    if (u == v) return res;
-    if (depth[u] > depth[v]) swap(u, v);
-    return max(res, querySeg(1, 0, n-1, pos[u]+1, pos[v]));
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int t; cin >> t;
-    while (t--) {
-        cin >> n;
-        for (int i = 1; i <= n; i++) {
-            adj[i].clear();
-            heavy[i] = 0;
-        }
-        for (int i = 1; i < n; i++) {
-            int u,v,c;
-            cin >> u >> v >> c;
-            adj[u].push_back({v,c});
-            adj[v].push_back({u,c});
-            U[i] = u; V[i] = v;
-        }
-        depth[0] = 0; curPos = 0;
-        dfs(1,0);
-        decompose(1,1);
-        build(1,0,n-1);
-
-        while (true) {
-            string s; cin >> s;
-            if (s == "DONE") break;
-            if (s == "QUERY") {
-                int u, v; cin >> u >> v;
-                cout << queryPath(u, v) << "\n";
-            } else { // CHANGE
-                int i, val; cin >> i >> val;
-                int u = U[i], v = V[i];
-                if (depth[u] > depth[v]) update(1,0,n-1,pos[u],val);
-                else update(1,0,n-1,pos[v],val);
-            }
-        }
+signed main()
+{
+    Fokinnir_moto_kaj_koris_na
+    int _ = 1,tc = 0;
+    cin >> _;
+    while (_--)
+    {
+        //cout<<"Case "<<++tc<<": ";
+        Goriber_solve();
     }
 }
+
