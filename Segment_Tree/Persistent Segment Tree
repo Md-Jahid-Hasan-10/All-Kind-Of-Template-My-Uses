@@ -34,15 +34,18 @@ struct node{
 };
 int ar[N];
 node* versions[N+5];
+vector<node*> lagbe;
 node* build(int l,int r){
     if(l == r){
         node* me = new node();
+        lagbe.pb(me);
         me->val = ar[l];
         me->lc = NULL;
         me->rc = NULL;
         return me;
     }
     node* my = new node();
+    lagbe.pb(my);
     int mid = (l + r)/2;
     my->lc = build(l,mid);
     my->rc = build(mid+1,r);
@@ -63,12 +66,14 @@ int query(node* my,int l,int r,int L,int R){
 node* update(node* my,int l,int r,int ind,int val){
     if(l == r){
         node* new_my = new node();
+        lagbe.pb(new_my);
         new_my->lc = NULL;
         new_my->rc = NULL;
         new_my->val = val;
         return new_my;
     }
     node* new_me = new node();
+    lagbe.pb(new_me);
     int mid = (l + r)/2;
     if(ind <= mid){
         node* x = update(my->lc,l,mid,ind,val);
@@ -83,7 +88,6 @@ node* update(node* my,int l,int r,int ind,int val){
     new_me->val = new_me->lc->val + new_me->rc->val;
     return new_me;
 }
-
 
 void Goriber_solve()
 {
@@ -117,6 +121,9 @@ void Goriber_solve()
             now++;
         }
     }
+    for(auto u : lagbe){
+        delete u;
+    }
 }
 signed main()
 {
@@ -129,4 +136,3 @@ signed main()
         Goriber_solve();
     }
 }
-
