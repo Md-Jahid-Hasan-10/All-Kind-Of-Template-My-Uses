@@ -1,0 +1,128 @@
+//! In The Name Of Allah
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long
+#define endl '\n'
+#define pb push_back
+#define pob pop_back
+#define make M
+#define F first
+#define S second
+#define all(s) (s).begin(), (s).end()
+#define rall(s) s.rbegin(), s.rend()
+#define sz(x) (int)x.size()
+#define mem(a, b) memset(a, b, sizeof(a))
+
+#define Fokinnir_moto_kaj_koris_na \
+    ios_base::sync_with_stdio(0);  \
+    cin.tie(0);                    \
+    cout.tie(0);
+
+typedef long long ll;
+typedef double dl;
+typedef vector<int> vi;
+const ll oo = 1e18;
+const ll mod = 1e9 + 7;
+const ll N = 2e5 + 123;
+
+struct node{
+    int val;
+    node* lc;
+    node* rc;
+};
+int ar[N];
+node* versions[N+5];
+node* build(int l,int r){
+    if(l == r){
+        node* me = new node();
+        me->val = 0;
+        me->lc = NULL;
+        me->rc = NULL;
+        return me;
+    }
+    node* my = new node();
+    int mid = (l + r)/2;
+    my->lc = build(l,mid);
+    my->rc = build(mid+1,r);
+    my->val = (my->lc->val + my->rc->val);
+    return my;
+}
+
+int query(node* n1,node* n2,int l,int r,int k){
+    if(l == r){
+         return l;
+    }
+    int mid = (l + r)/2;
+    int left = n1->lc->val - n2->lc->val; 
+    if(k <= left){
+        return query(n1->lc,n2->lc,l,mid,k);
+    }
+    else{
+        return query(n1->rc,n2->rc,mid+1,r,k-left);
+    }
+}
+node* update(node* my,int l,int r,int ind,int val){
+    if(l == r){
+        node* new_my = new node();
+        new_my->lc = NULL;
+        new_my->rc = NULL;
+        new_my->val = my->val + val;
+        return new_my;
+    }
+    node* new_me = new node();
+    int mid = (l + r)/2;
+    if(ind <= mid){
+        node* x = update(my->lc,l,mid,ind,val);
+        new_me->lc = x;
+        new_me->rc = my->rc;
+    }
+    else{
+        node* y = update(my->rc,mid+1,r,ind,val);
+        new_me->lc = my->lc;
+        new_me->rc = y;
+    }
+    new_me->val = new_me->lc->val + new_me->rc->val;
+    return new_me;
+}
+
+vi com;
+
+void Goriber_solve()
+{
+    int n,q;
+    cin >> n >> q;
+    for(int i = 1; i <= n; i++){
+        cin >> ar[i];
+        com.pb(ar[i]);
+    }
+    sort(all(com));
+    com.resize(unique(all(com))-com.begin());
+    map<int,int> pos;
+    int x = 0;
+    for(auto u : com)pos[u] = x++;
+    int si = sz(com);
+    versions[0] = build(0,si);
+    for(int i = 1; i <= n; i++){
+        versions[i] = update(versions[i-1],0,si,pos[ar[i]],1);
+    }
+    while(q--){
+        int l,r,k;
+        cin >> l >> r >> k;
+        int x = query(versions[r],versions[l-1],0,si,k);
+        cout << com[x] << endl;
+    }
+}
+signed main()
+{
+    Fokinnir_moto_kaj_koris_na
+    int _ = 1,tc = 0;
+    //cin >> _;
+    while (_--)
+    {
+        //cout<<"Case "<<++tc<<": ";
+        Goriber_solve();
+    }
+}
+
