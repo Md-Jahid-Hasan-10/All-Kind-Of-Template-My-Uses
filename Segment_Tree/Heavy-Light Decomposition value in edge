@@ -109,7 +109,7 @@ int Query(int a,int b){
     }
     if(lev[a] < lev[b])swap(a,b);
     int l = pos[b]+1,r = pos[a];
-    if(l <= r)mx = max(mx,query(1,1,idx,l,r));
+    if(l <= r)mx = max(mx,query(1,1,idx,l,r));//edge base b+1 to a,node base b to a
     return mx;
 }
 void Goriber_solve()
