@@ -1,62 +1,130 @@
-#include<bits/stdc++.h>
+//! In The Name Of Allah
+#include <bits/stdc++.h>
 using namespace std;
 
-#define pii pair<int,int>
+#define int long long
+#define endl '\n'
+#define pb push_back
+#define F first
+#define S second
+#define all(s) (s).begin(), (s).end()
+#define rall(s) s.rbegin(), s.rend()
+#define sz(x) (int)x.size()
+#define Fokinnir_moto_kaj_koris_na \
+    ios_base::sync_with_stdio(0);  \
+    cin.tie(0);                    \
+    cout.tie(0);
 
-struct AhoCorasick {
-    static const int A = 26;
-    struct T {
-        int nxt[A], link = 0;
-        vector<int> out;
-        T() { fill(nxt, nxt + A, 0); }
-    };
-    vector<T> t = {T()};
-    vector<string> patterns;
-    void insert(const string &s, int id) {
-        int u = 0;
-        for (char c : s) {
-            int x = c - 'a';
-            if (!t[u].nxt[x]) t[u].nxt[x] = t.size(), t.emplace_back();
-            u = t[u].nxt[x];
-        }
-        t[u].out.push_back(id);
+typedef long long ll;
+typedef vector<int> vi;
+typedef pair<int, int> pii;
+t
+const ll oo = 1e18;
+const ll mod = 1e9 + 7;
+const ll N = 5e5 + 123;
+
+struct AhoCorasick{
+    int node_no,ptrn_no;
+    const int root = 0;
+    vector<vector<int>> next;
+    vector<int> link;
+    vector<bitset<N>>output;
+    bitset<N>zero;
+    vector<int>occr;
+    AhoCorasick(): node_no(0),ptrn_no(0){node();}
+    int node(){
+        next.emplace_back(26,0);
+        link.emplace_back(root);
+        output.emplace_back(zero);
+        occr.emplace_back(0);
+        return node_no++;
     }
 
-    void build() {
-        queue<int> q;
-        for (int c = 0; c < A; ++c)
-            if (t[0].nxt[c]) q.push(t[0].nxt[c]);
-        while (!q.empty()) {
-            int u = q.front(), p = t[u].link; q.pop();
-            for (int c = 0; c < A; ++c) {
-                int &v = t[u].nxt[c];
-                if (!v) v = t[p].nxt[c];
-                else t[v].link = t[p].nxt[c], q.push(v);
+    void add_pattern(const string &s){
+        int cur = root;
+        for(auto c : s){
+            int ch = c - 'a';
+            if(!next[cur][ch]){
+                next[cur][ch] = node();
             }
-            for(int x : t[t[u].link].out) t[u].out.push_back(x);
+            cur = next[cur][ch];
+        }
+        output[cur][ptrn_no] = 1;
+        ptrn_no++;
+    }
+    void build_Automation(){
+        queue<int> Q;
+        for(int ch = 0; ch < 26; ch++){
+            if(next[root][ch]){
+                int lev1 = next[root][ch];
+                link[lev1] = root;
+                Q.push(lev1);
+            }
+        }
+        while(!Q.empty()){
+            int cur_stat = Q.front();Q.pop();
+            for(int ch = 0; ch < 26; ch++){
+                if(next[cur_stat][ch]){
+                    int child=next[cur_stat][ch];
+                    int failure=link[cur_stat];
+                    while(failure != root && !next[failure][ch]){
+                        failure=link[failure];
+                    }
+                    failure=next[failure][ch];
+                    link[child]=failure;
+                    output[child] |= output[failure];
+                    Q.push(child);
+                }
+            }
         }
     }
-    vector<pii> search(const string &s) {
-        vector<pii> matches;
-        int u = 0;
-        for (int i = 0; i < s.size(); ++i) {
-            int x = s[i] - 'a';
-            u = t[u].nxt[x];
-            for (int id : t[u].out)
-                matches.emplace_back(id, i);
+    int find_NextState(int cur_stat,int ch){
+        while(cur_stat != root && !next[cur_stat][ch]){
+            cur_stat = link[cur_stat];
         }
-        return matches;
+        return cur_stat = next[cur_stat][ch];
+    }
+    vi searchWords(string pattern[],string &text){
+        int cur_stat = root;
+        for(int i = 0; i < text.size(); i++){
+            int ch = text[i]-'a';
+            cur_stat = find_NextState(cur_stat,ch);
+            if(output[cur_stat].any()){
+                for(int j = 0; j < ptrn_no; j++){
+                    if(output[cur_stat][j]){
+                       cout << pattern[j] << " appers from ";
+                       cout << i-pattern[j].size()+1<<" to " << i << endl;
+                       occr[j]++;
+                    }
+                }
+            }
+        }
     }
 };
-int main() {
-    AhoCorasick ac;
-    vector<string> patterns = {"he", "she", "his", "her"};
-    for (int i = 0; i < patterns.size(); ++i)
-        ac.insert(patterns[i], i);
-    ac.build();
-    string text = "sherlok";
-    auto counts = ac.search(text);
-    for(auto p : counts){
-        cout << patterns[p.first] << " ends at position " << p.second << endl;
+
+void Goriber_solve()
+{
+    string text;
+    cin >> text;
+    int n; cin >> n;
+    string pattern[n+1];
+    AhoCorasick aho;
+    for(int i = 0; i < n; i++){
+        cin >> pattern[i];
+        aho.add_pattern(pattern[i]);
+    }
+    aho.build_Automation();
+    aho.searchWords(pattern,text);
+}
+signed main()
+{
+    Fokinnir_moto_kaj_koris_na
+    int _ = 1,tc = 0;
+    //cin >> _;
+    while (_--)
+    {
+        //cout<<"Case "<<++tc<<": ";
+        Goriber_solve();
     }
 }
+
