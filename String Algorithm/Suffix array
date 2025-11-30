@@ -18,7 +18,7 @@ void countingSort(int k){//O(n)
     for(i = 0; i < n; i++)
         SA[i] = tempSA[i];
 }
-void constructSA(){//up to 100000 characters
+void constructSA(){
     int i, k, r;
     for(i = 0; i < n; i++)RA[i] = T[i];
     for(i = 0; i < n; i++)SA[i] = i;
