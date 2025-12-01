@@ -61,3 +61,7 @@ void Goriber_solve(){
      }
 
 }
+1.Substring Search->Binary Search on Suffix array
+2.Counting Substrings->Binary serach SA Upper-Lowerbound
+3.Distrinct Substrings->(n*(n+1))/2 - sumOf(LCP)
+4.Longest Common Substring->T+'#'+Pat+'$',SAi < n1 && SAj > n1 maxOf LCP
