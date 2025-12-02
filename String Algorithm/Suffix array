@@ -65,3 +65,5 @@ void Goriber_solve(){
 2.Counting Substrings->Binary serach SA Upper-Lowerbound
 3.Distrinct Substrings->(n*(n+1))/2 - sumOf(LCP)
 4.Longest Common Substring->T+'#'+Pat+'$',SAi < n1 && SAj > n1 maxOf LCP
+5.Finding Longest Substring that occur >= K time-> LCP K-1 consicutive = k time max is length of Substring
+6.Kth smallest substring->suflen = n-SA[i]-1,i = 1 to n-1,new_substr=suflen-LCP[i],if new <= k,len=LCP[i]+k,start=SA[i]
