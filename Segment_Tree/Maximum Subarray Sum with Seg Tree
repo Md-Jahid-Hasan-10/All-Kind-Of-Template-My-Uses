@@ -1,0 +1,64 @@
+struct MaxSubarraySum{
+    struct node{
+        int pref,suf,val,sum;
+        //node.val contain max subarray value
+    };
+    int N;
+    ll neutral;
+    vector<node> t;
+    MaxSubarraySum(int _N,ll assign_val){
+        neutral = assign_val;
+        N = _N;
+        t.resize(4*N);
+        for(int i = 0; i < 4*N; i++){
+            t[i] = {0,0,0,0};
+        }
+        build(1,1,N);
+    }
+    void build(int i,int l,int r){
+        if(l == r){
+            t[i].pref=t[i].suf=t[i].val=t[i].sum=neutral;
+            return;
+        }
+        int mid = (l + r)/2;
+        build(2*i,l,mid);
+        build(2*i+1,mid+1,r);
+        t[i] = marge(t[2*i],t[2*i+1]);
+    }
+    node marge(node a,node b){
+        node c;
+        c.pref = max(a.pref,a.sum+b.pref);
+        c.suf = max(b.suf,b.sum+a.suf);
+        c.val = max({a.val,b.val,a.suf+b.pref});
+        c.sum = a.sum + b.sum;
+        return c;
+    }
+    void update(int i,int l,int r,int pos,int val){
+        if(l > pos || r < pos){
+            return;
+        }
+        if(l == pos && r == pos){
+            t[i].pref=t[i].suf=t[i].val=t[i].sum=val;
+            return;
+        }
+        int mid = (l + r)/2;
+        update(2*i,l,mid,pos,val);
+        update(2*i+1,mid+1,r,pos,val);
+        t[i] = marge(t[2*i],t[2*i+1]);
+    }
+    node query(int i,int l,int r,int L,int R){
+        if(l > R || r < L){
+            return {0,0,0,0};
+        }
+        if(l >= L && r <= R)return t[i];
+        int mid = (l + r)/2;
+        return marge(query(2*i,l,mid,L,R),query(2*i+1,mid+1,r,L,R));
+    }
+    void update(int pos,int val){
+        update(1,1,N,pos,val);
+    }
+    node query(int l,int r){
+        return query(1,1,N,l,r);
+    }
+
+};
