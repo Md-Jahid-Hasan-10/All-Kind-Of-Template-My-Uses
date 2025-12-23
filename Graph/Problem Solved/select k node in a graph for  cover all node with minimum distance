@@ -1,0 +1,137 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+#define int long long
+#define endl '\n'
+#define pb push_back
+#define pob pop_back
+#define make M
+#define F first
+#define S second
+#define all(s) (s).begin(), (s).end()
+#define rall(s) s.rbegin(), s.rend()
+#define sz(x) (int)x.size()
+#define mem(a, b) memset(a, b, sizeof(a))
+#define cnt_bit(x) __builtin_popcountll(x)
+#define getbit(n, i) (((n) & (1LL << (i))) != 0)
+#define msb(x) 64 - __builtin_clzll(x)
+#define setbit(n, i) ((n) |= (1LL << (i)))
+#define hoise cout << "Hoise" << endl;
+#define tham getchar();
+#define TxtIO                         \
+    freopen("sample.in", "r", stdin); \
+    freopen("sample.out", "w", stdout);
+#define Fokinnir_moto_kaj_koris_na \
+    ios_base::sync_with_stdio(0);  \
+    cin.tie(0);                    \
+    cout.tie(0);
+#define py cout << "YES" << endl
+#define pn cout << "NO" << endl
+#define PI acos(-1)
+#define sum_of(A) accumulate(all(A), 0ll)
+#define max_of(A) *max_element(all(A))
+#define min_of(A) *min_element(all(A))
+ 
+typedef long long ll;
+typedef double dl;
+typedef vector<int> vi;
+typedef vector<vi> vvi;
+typedef pair<int, int> pii;
+typedef vector<pii> vii;
+typedef array<int,3> tu;
+ 
+ll gcd(ll a, ll b) { return __gcd(a, b); }
+ll lcm(ll a, ll b) { return a * (b / gcd(a, b)); }
+ 
+/*
+auto Goriber_function = [&] (int m) -> int{
+ 
+};
+*/
+ 
+const ll oo = 1e18;
+const ll mod = 1e9 + 7;
+const int MAXN = 100005;
+const int INF = 1e9;
+ 
+vector<int> adj[MAXN];
+int n, k,cnt_guards;
+pair<int, int> dfs(int u, int parent, int R){
+    int d_uncov = -INF;
+    int d_guard = INF;
+    for(int v : adj[u]){
+        if(v == parent)continue;
+        auto pp = dfs(v, u, R);
+        int child_uncov = pp.F, child_guard=pp.S;
+        if(child_uncov != -INF){
+            d_uncov = max(d_uncov, child_uncov + 1);
+        }
+        if(child_guard != INF){
+            d_guard = min(d_guard, child_guard + 1);
+        }
+    }
+    if(d_uncov == -INF){
+        d_uncov = 0;
+    }
+    if(d_uncov + d_guard <= R){
+        d_uncov = -INF;
+    }
+    if(d_uncov == R){
+        cnt_guards++;
+        d_guard = 0;
+        d_uncov = -INF;
+    }
+    return {d_uncov, d_guard};
+}
+bool check(int R) {
+    cnt_guards = 0;
+    auto pp = dfs(1, -1, R);
+    int d_uncov = pp.F, d_guard = pp.S;
+    if(d_uncov >= 0){
+        cnt_guards++;
+    }
+    return cnt_guards <= k;
+}
+void Goriber_solve()
+{
+    cin >> n >> k;
+    for(int i = 1; i <= n; i++){
+        adj[i].clear();
+    }
+    for(int i = 0; i < n - 1; i++){
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    if(k >= n){
+        cout << 0 << endl;
+        return;
+    }
+    int lo = 0, hi = n, ans = n;
+    while(lo <= hi){
+        int mid = (lo + hi) / 2;
+        if(check(mid)){
+            ans = mid;
+            hi = mid - 1;
+        } 
+        else{
+            lo = mid + 1;
+        }
+    }
+    cout << ans << endl;
+}
+ 
+signed main()
+{
+    Fokinnir_moto_kaj_koris_na
+    int _ = 1,tc = 0;
+    cin >> _;
+    while (_--)
+    {
+        //cout<<"Case "<<++tc<<": ";
+        Goriber_solve();
+    }
+    return 0;
+}
+ 
