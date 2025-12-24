@@ -106,6 +106,12 @@ int add(int a,int b,int mod){
 /*
 int p = 237,mod = 1000000289;
 ar.erase(unique(all(ar)), ar.end());
+vector<vector<vector<bool>>> vis;
+vector<vector<int>> ans;
+--> main function
+vis.clear();ans.clear();
+vis.resize(z, vector<vector<bool>>(x, vector<bool>(y, false)));
+ans.resize(x,vector<int>(y,0));
 auto Goriber_function = [&] (int m) -> int{
 
 };
