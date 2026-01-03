@@ -1,0 +1,7 @@
+Check if bit i is set: (mask >> i) & 1
+Set bit i: mask | (1 << i)
+Clear bit i: mask & ~(1 << i)
+Toggle bit i: mask ^ (1 << i)
+Count set bits: popcount(mask)
+Lowest set bit: mask & (-mask)
+Clear lowest set bit: mask & (mask - 1)
