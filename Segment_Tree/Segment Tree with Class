@@ -1,0 +1,56 @@
+struct SegTree {
+    int n;// ar always 0 base index
+    vector<int> tree;
+    SegTree(int n) : n(n), tree(4 * n, 0) {}
+    int combine(int a,int b){
+        return (a ^ b);
+    }
+    void t_build(int node,int l,int r,vector<int>& a){
+        if(l == r){
+            tree[node] = a[l];
+            return;
+        }
+        int mid = (l + r) / 2;
+        t_build(node*2, l, mid, a);
+        t_build(node*2+1, mid+1, r, a);
+        tree[node] = combine(tree[node*2],tree[node*2+1]);
+    }
+    void t_update(int node,int l,int r,int pos,int val){
+        if(l == r){
+            tree[node] = val;
+            return;
+        }
+        int mid = (l + r) / 2;
+        if(pos <= mid)
+            t_update(node*2, l, mid, pos, val);
+        else
+            t_update(node*2+1, mid+1, r, pos, val);
+        tree[node] = combine(tree[node*2],tree[node*2+1]);
+    }
+    int t_query(int node,int l,int r,int ql,int qr){
+        if(qr < l || r < ql) return 0;// identity
+        if(ql <= l && r <= qr)return tree[node];
+        int mid = (l + r) / 2;
+        return combine(t_query(node*2,l,mid,ql,qr),t_query(node*2+1,mid+1,r,ql,qr));
+    }
+    void build(vector<int> &ar){
+        t_build(1,0,n-1,ar);
+    }
+    void update(int i,int val){
+        t_update(1,0,n-1,i,val);
+    }
+    int query(int l,int r){
+        return t_query(1,0,n-1,l,r);
+    }
+};
+void Goriber_solve()
+{
+    int n;
+    cin >> n;
+    vi ar(n);
+    for(auto &i : ar)cin >> i;
+    SegTree st(n);
+    st.build(ar);
+    st.update(0,2);
+    cout << st.query(0,2) << endl;
+}
