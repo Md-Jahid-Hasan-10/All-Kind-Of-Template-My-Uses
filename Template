@@ -33,11 +33,6 @@ using namespace std;
 #define getbit(n, i) (((n) & (1LL << (i))) != 0)
 #define msb(x) 64 - __builtin_clzll(x)
 #define setbit(n, i) ((n) |= (1LL << (i)))
-#define hoise cout << "Hoise" << endl;
-#define tham getchar();
-#define TxtIO                         \
-    freopen("sample.in", "r", stdin); \
-    freopen("sample.out", "w", stdout);
 #define Fokinnir_moto_kaj_koris_na \
     ios_base::sync_with_stdio(0);  \
     cin.tie(0);                    \
@@ -129,6 +124,10 @@ void Goriber_solve()
 signed main()
 {
     Fokinnir_moto_kaj_koris_na
+    #ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+    #endif
     int _ = 1,tc = 0;
     cin >> _;
     while (_--)
