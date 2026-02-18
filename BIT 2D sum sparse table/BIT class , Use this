@@ -1,0 +1,25 @@
+//! In The Name Of Allah
+
+struct Bit{
+    int n;
+    vector<int> tree;
+    Bit(int _n){
+        n = 4*_n;
+        tree.clear();
+        tree.assign(n+3,0);
+    }
+    void update(int x, int delta) {
+        for (; x < n; x += x & -x)
+            tree[x] += delta;
+    }
+    long long query(int x) {
+        long long sum = 0;
+        for (; x > 0; x -= x & -x)
+            sum += tree[x];
+        return sum;
+    }
+   long long sum(int l,int r){
+       return query(r) - query(l-1);
+   }
+};
+
