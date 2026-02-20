@@ -112,6 +112,10 @@ vis.resize(z, vector<vector<bool>>(x, vector<bool>(y, false)));
 auto Goriber_function = [&] (int m) -> int{
 
 };
+recursive lamda function
+function<int(int,int)> DP = [&](int cur, int ind) -> int {
+        
+    };
 */
 const ll oo = 1e18;
 const ll mod = 1e9 + 7;
