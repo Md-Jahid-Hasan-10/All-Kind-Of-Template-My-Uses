@@ -1,0 +1,42 @@
+#include<iostream>
+#include <ext/pb_ds/assoc_container.hpp> 
+#include <ext/pb_ds/tree_policy.hpp> 
+
+using namespace __gnu_pbds; 
+using namespace std;
+
+typedef tree<int,null_type,less_equal<int>,rb_tree_tag,tree_order_statistics_node_update> ordered_set;
+
+void myerase(ordered_set &t, int v){
+    int rank = t.order_of_key(v);//Number of elements that are less than v in t
+    ordered_set::iterator it = t.find_by_order(rank); //Iterator that points to the (rank+1)th element in t
+    t.erase(it);
+}
+
+void printOrderedSet(ordered_set s){
+    //Function to show the contents of the set
+    for(auto it=s.begin(); it!=s.end(); it++){
+        cout<<*it<<" ";
+    }cout<<endl;
+}
+
+int main(){
+    //Create an ordered_set t with the numbers 0,0,1,1,2,2,3,3,4,4
+    ordered_set t;
+    for(int i=0; i<10;i++){
+        t.insert(i/2);
+    }
+    printOrderedSet(t); //output: 0 0 1 1 2 2 3 3 4 4
+    
+    myerase(t, 3);
+    printOrderedSet(t); //output: 0 0 1 1 2 2 3 4 4
+
+    myerase(t, 3);
+    printOrderedSet(t); //output: 0 0 1 1 2 2 4 4
+
+    myerase(t, 0);
+    printOrderedSet(t); //output: 0 1 1 2 2 4 4
+
+    myerase(t, 1);
+    printOrderedSet(t); //output: 0 1 2 2 4 4
+}
