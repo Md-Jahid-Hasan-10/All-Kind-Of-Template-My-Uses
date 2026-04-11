@@ -1,0 +1,53 @@
+struct DoubleHash {
+    ll h1, h2;
+    bool operator==(const DoubleHash& other) const {
+        return h1 == other.h1 && h2 == other.h2;
+    }
+};
+
+class StringHasher {
+private:
+    int n;
+    ll b1 = 131, m1 = 676767677;
+    ll b2 = 137, m2 = 1e9 + 9;
+    
+    vector<ll> pref1, suff1, pow1;
+    vector<ll> pref2, suff2, pow2;
+
+public:
+    StringHasher(string s) {
+        n = s.length();
+        pref1.assign(n + 1, 0); suff1.assign(n + 1, 0); pow1.assign(n + 1, 1);
+        pref2.assign(n + 1, 0); suff2.assign(n + 1, 0); pow2.assign(n + 1, 1);
+
+        for (int i = 0; i < n; i++) {
+            pow1[i + 1] = (pow1[i] * b1) % m1;
+            pref1[i + 1] = (pref1[i] * b1 + s[i]) % m1;
+            
+            pow2[i + 1] = (pow2[i] * b2) % m2;
+            pref2[i + 1] = (pref2[i] * b2 + s[i]) % m2;
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            suff1[i] = (suff1[i + 1] + (ll)s[i] * pow1[n - 1 - i]) % m1;
+            suff2[i] = (suff2[i + 1] + (ll)s[i] * pow2[n - 1 - i]) % m2;
+        }
+    }
+    DoubleHash get_hash_excluding(int i) {
+        if (i < 0 || i >= n) return { -1, -1 };
+
+        ll h1 = (pref1[i] * pow1[n - 1 - i] + suff1[i + 1]) % m1;
+        ll h2 = (pref2[i] * pow2[n - 1 - i] + suff2[i + 1]) % m2;
+
+        return { h1, h2 };
+    }
+    DoubleHash get_full_hash() {
+        return { pref1[n], pref2[n] };
+    }
+    DoubleHash get_substring_hash(int l, int r) {
+        if (l < 0 || r >= n || l > r) return { -1, -1 };
+        ll h1 = (pref1[r + 1] - (pref1[l] * pow1[r - l + 1]) % m1 + m1) % m1;
+        ll h2 = (pref2[r + 1] - (pref2[l] * pow2[r - l + 1]) % m2 + m2) % m2;
+        return { h1, h2 };
+    }
+};
