@@ -1,0 +1,22 @@
+map<long long,int> factorize(long long n) {
+    map<long long,int> f;
+    for (long long i = 2; i*i <= n; i++) {
+        while (n % i == 0) { f[i]++; n /= i; }
+    }
+    if (n > 1) f[n]++;
+    return f;
+}
+vector<long long> getDivisors(map<long long,int>& factors) {
+    vector<long long> divs = {1};
+    for (auto& [p, e] : factors) {
+        int sz = divs.size();
+        long long pe = 1;
+        for (int i = 0; i < e; i++) {
+            pe *= p;
+            for (int j = 0; j < sz; j++)
+                divs.push_back(divs[j] * pe);
+        }
+    }
+    sort(divs.begin(), divs.end());
+    return divs;
+}
